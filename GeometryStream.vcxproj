@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{e6821b55-06a6-4039-91cc-7c23b7d1c5c6}</ProjectGuid>
+    <RootNamespace>GeometryStream</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="fpzip\error.cpp" />
+    <ClCompile Include="fpzip\rcdecoder.cpp" />
+    <ClCompile Include="fpzip\rcencoder.cpp" />
+    <ClCompile Include="fpzip\rcqsmodel.cpp" />
+    <ClCompile Include="fpzip\read.cpp" />
+    <ClCompile Include="fpzip\version.cpp" />
+    <ClCompile Include="fpzip\write.cpp" />
+    <ClCompile Include="GeometryIO.cpp" />
+    <ClCompile Include="lzma\7zCrc.c" />
+    <ClCompile Include="lzma\7zCrcOpt.c" />
+    <ClCompile Include="lzma\7zStream.c" />
+    <ClCompile Include="lzma\Alloc.c" />
+    <ClCompile Include="lzma\Bra.c" />
+    <ClCompile Include="lzma\Bra86.c" />
+    <ClCompile Include="lzma\BraIA64.c" />
+    <ClCompile Include="lzma\CpuArch.c" />
+    <ClCompile Include="lzma\Delta.c" />
+    <ClCompile Include="lzma\LzFind.c" />
+    <ClCompile Include="lzma\LzFindMt.c" />
+    <ClCompile Include="lzma\LzFindOpt.c" />
+    <ClCompile Include="lzma\Lzma2Dec.c" />
+    <ClCompile Include="lzma\Lzma2DecMt.c" />
+    <ClCompile Include="lzma\Lzma2Enc.c" />
+    <ClCompile Include="lzma\LzmaDec.c" />
+    <ClCompile Include="lzma\LzmaEnc.c" />
+    <ClCompile Include="lzma\LzmaLib.c" />
+    <ClCompile Include="lzma\MtCoder.c" />
+    <ClCompile Include="lzma\MtDec.c" />
+    <ClCompile Include="lzma\Ppmd7.c" />
+    <ClCompile Include="lzma\Ppmd7Dec.c" />
+    <ClCompile Include="lzma\Ppmd7Enc.c" />
+    <ClCompile Include="lzma\Sha256.c" />
+    <ClCompile Include="lzma\Sha256Opt.c" />
+    <ClCompile Include="lzma\Sort.c" />
+    <ClCompile Include="lzma\Threads.c" />
+    <ClCompile Include="lzma\Xz.c" />
+    <ClCompile Include="lzma\XzCrc64.c" />
+    <ClCompile Include="lzma\XzCrc64Opt.c" />
+    <ClCompile Include="lzma\XzDec.c" />
+    <ClCompile Include="lzma\XzEnc.c" />
+    <ClCompile Include="lzma\XzIn.c" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="fpzip\codec.h" />
+    <ClInclude Include="fpzip\fpzip.h" />
+    <ClInclude Include="fpzip\front.h" />
+    <ClInclude Include="fpzip\pccodec.h" />
+    <ClInclude Include="fpzip\pccodec.inl" />
+    <ClInclude Include="fpzip\pcdecoder.h" />
+    <ClInclude Include="fpzip\pcdecoder.inl" />
+    <ClInclude Include="fpzip\pcencoder.h" />
+    <ClInclude Include="fpzip\pcencoder.inl" />
+    <ClInclude Include="fpzip\pcmap.h" />
+    <ClInclude Include="fpzip\pcmap.inl" />
+    <ClInclude Include="fpzip\rcdecoder.h" />
+    <ClInclude Include="fpzip\rcdecoder.inl" />
+    <ClInclude Include="fpzip\rcencoder.h" />
+    <ClInclude Include="fpzip\rcencoder.inl" />
+    <ClInclude Include="fpzip\rcmodel.h" />
+    <ClInclude Include="fpzip\rcqsmodel.h" />
+    <ClInclude Include="fpzip\rcqsmodel.inl" />
+    <ClInclude Include="fpzip\read.h" />
+    <ClInclude Include="fpzip\types.h" />
+    <ClInclude Include="fpzip\write.h" />
+    <ClInclude Include="GeometryIO.h" />
+    <ClInclude Include="lzma\7zCrc.h" />
+    <ClInclude Include="lzma\7zTypes.h" />
+    <ClInclude Include="lzma\Alloc.h" />
+    <ClInclude Include="lzma\Bra.h" />
+    <ClInclude Include="lzma\Compiler.h" />
+    <ClInclude Include="lzma\CpuArch.h" />
+    <ClInclude Include="lzma\Delta.h" />
+    <ClInclude Include="lzma\LzFind.h" />
+    <ClInclude Include="lzma\LzFindMt.h" />
+    <ClInclude Include="lzma\LzHash.h" />
+    <ClInclude Include="lzma\Lzma2Dec.h" />
+    <ClInclude Include="lzma\Lzma2DecMt.h" />
+    <ClInclude Include="lzma\Lzma2Enc.h" />
+    <ClInclude Include="lzma\LzmaDec.h" />
+    <ClInclude Include="lzma\LzmaEnc.h" />
+    <ClInclude Include="lzma\LzmaLib.h" />
+    <ClInclude Include="lzma\MtCoder.h" />
+    <ClInclude Include="lzma\MtDec.h" />
+    <ClInclude Include="lzma\Ppmd.h" />
+    <ClInclude Include="lzma\Ppmd7.h" />
+    <ClInclude Include="lzma\Precomp.h" />
+    <ClInclude Include="lzma\RotateDefs.h" />
+    <ClInclude Include="lzma\Sha256.h" />
+    <ClInclude Include="lzma\Sort.h" />
+    <ClInclude Include="lzma\Threads.h" />
+    <ClInclude Include="lzma\Xz.h" />
+    <ClInclude Include="lzma\XzCrc64.h" />
+    <ClInclude Include="lzma\XzEnc.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

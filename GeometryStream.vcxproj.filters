@@ -1,0 +1,285 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="GeometryIO.cpp" />
+    <ClCompile Include="fpzip\error.cpp">
+      <Filter>fpzip</Filter>
+    </ClCompile>
+    <ClCompile Include="fpzip\rcdecoder.cpp">
+      <Filter>fpzip</Filter>
+    </ClCompile>
+    <ClCompile Include="fpzip\rcencoder.cpp">
+      <Filter>fpzip</Filter>
+    </ClCompile>
+    <ClCompile Include="fpzip\rcqsmodel.cpp">
+      <Filter>fpzip</Filter>
+    </ClCompile>
+    <ClCompile Include="fpzip\read.cpp">
+      <Filter>fpzip</Filter>
+    </ClCompile>
+    <ClCompile Include="fpzip\version.cpp">
+      <Filter>fpzip</Filter>
+    </ClCompile>
+    <ClCompile Include="fpzip\write.cpp">
+      <Filter>fpzip</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\Alloc.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\Bra.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\Bra86.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\BraIA64.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\CpuArch.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\Delta.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\LzFind.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\LzFindMt.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\LzFindOpt.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\Lzma2Dec.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\Lzma2DecMt.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\Lzma2Enc.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\LzmaDec.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\LzmaEnc.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\LzmaLib.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\MtCoder.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\MtDec.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\Ppmd7.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\Ppmd7Dec.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\Ppmd7Enc.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\Sha256.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\Sha256Opt.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\Sort.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\Threads.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\Xz.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\XzCrc64.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\XzCrc64Opt.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\XzDec.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\XzEnc.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\XzIn.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\7zCrc.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\7zCrcOpt.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="lzma\7zStream.c">
+      <Filter>lzma</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GeometryIO.h" />
+    <ClInclude Include="fpzip\codec.h">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="fpzip\fpzip.h">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="fpzip\front.h">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="fpzip\pccodec.h">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="fpzip\pccodec.inl">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="fpzip\pcdecoder.h">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="fpzip\pcdecoder.inl">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="fpzip\pcencoder.h">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="fpzip\pcencoder.inl">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="fpzip\pcmap.h">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="fpzip\pcmap.inl">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="fpzip\rcdecoder.h">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="fpzip\rcdecoder.inl">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="fpzip\rcencoder.h">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="fpzip\rcencoder.inl">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="fpzip\rcmodel.h">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="fpzip\rcqsmodel.h">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="fpzip\rcqsmodel.inl">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="fpzip\read.h">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="fpzip\types.h">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="fpzip\write.h">
+      <Filter>fpzip</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\Alloc.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\Bra.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\Compiler.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\CpuArch.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\Delta.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\LzFind.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\LzFindMt.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\LzHash.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\Lzma2Dec.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\Lzma2DecMt.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\Lzma2Enc.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\LzmaDec.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\LzmaEnc.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\LzmaLib.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\MtCoder.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\MtDec.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\Ppmd.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\Ppmd7.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\Precomp.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\RotateDefs.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\Sha256.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\Sort.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\Threads.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\Xz.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\XzCrc64.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\XzEnc.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\7zTypes.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="lzma\7zCrc.h">
+      <Filter>lzma</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="fpzip">
+      <UniqueIdentifier>{ee2394e1-6c7d-4fa8-8af5-6b6d55835ab1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lzma">
+      <UniqueIdentifier>{b5b3558e-9d84-435e-84a4-ba5983e506d7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
