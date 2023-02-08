@@ -6,7 +6,7 @@
 
 #ifdef _MSC_VER
 
-#include <stdlib.h>
+#include <cstdlib>
 
 /* don't use _rotl with MINGW. It can insert slow call to function. */
  

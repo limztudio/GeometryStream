@@ -1,13 +1,11 @@
 /* Lzma2Enc.c -- LZMA2 Encoder
 2021-02-09 : Igor Pavlov : Public domain */
 
-#include "Precomp.h"
+#include "Lzma2Enc.h"
 
-#include <string.h>
+#include <cstring>
 
 /* #define _7ZIP_ST */
-
-#include "Lzma2Enc.h"
 
 #ifndef _7ZIP_ST
 #include "MtCoder.h"

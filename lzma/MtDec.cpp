@@ -1,18 +1,16 @@
 /* MtDec.c -- Multi-thread Decoder
 2021-12-21 : Igor Pavlov : Public domain */
 
-#include "Precomp.h"
+#include "MtDec.h"
 
 // #define SHOW_DEBUG_INFO
 
-// #include <stdio.h>
-#include <string.h>
+// #include <cstdio>
+#include <cstring>
 
 #ifdef SHOW_DEBUG_INFO
-#include <stdio.h>
+#include <cstdio>
 #endif
-
-#include "MtDec.h"
 
 #ifndef _7ZIP_ST
 

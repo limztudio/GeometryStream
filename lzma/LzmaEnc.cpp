@@ -1,15 +1,15 @@
 /* LzmaEnc.c -- LZMA Encoder
 2022-07-15: Igor Pavlov : Public domain */
 
-#include "Precomp.h"
+#include "LzmaEnc.h"
 
-#include <string.h>
+#include <cstring>
 
 /* #define SHOW_STAT */
 /* #define SHOW_STAT2 */
 
 #if defined(SHOW_STAT) || defined(SHOW_STAT2)
-#include <stdio.h>
+#include <cstdio>
 #endif
 
 #include "CpuArch.h"

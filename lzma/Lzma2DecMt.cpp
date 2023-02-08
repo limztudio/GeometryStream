@@ -1,14 +1,16 @@
 /* Lzma2DecMt.c -- LZMA2 Decoder Multi-thread
 2021-04-01 : Igor Pavlov : Public domain */
 
-#include "Precomp.h"
+#include "Lzma2DecMt.h"
+
+#include "Compiler.h"
 
 // #define SHOW_DEBUG_INFO
 
 // #define _7ZIP_ST
 
 #ifdef SHOW_DEBUG_INFO
-#include <stdio.h>
+#include <cstdio>
 #endif
 
 #ifndef _7ZIP_ST

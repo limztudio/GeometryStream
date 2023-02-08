@@ -3,15 +3,13 @@
 
 /* #define SHOW_DEBUG_INFO */
 
-#include "Precomp.h"
+#include "Lzma2Dec.h"
 
 #ifdef SHOW_DEBUG_INFO
-#include <stdio.h>
+#include <cstdio>
 #endif
 
-#include <string.h>
-
-#include "Lzma2Dec.h"
+#include <cstring>
 
 /*
 00000000  -  End of data

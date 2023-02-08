@@ -24,103 +24,73 @@
     <ClCompile Include="fpzip\write.cpp">
       <Filter>fpzip</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\Alloc.c">
+    <ClCompile Include="lzma\7zCrc.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\Bra.c">
+    <ClCompile Include="lzma\7zTypes.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\Bra86.c">
+    <ClCompile Include="lzma\Alloc.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\BraIA64.c">
+    <ClCompile Include="lzma\Bra.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\CpuArch.c">
+    <ClCompile Include="lzma\CpuArch.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\Delta.c">
+    <ClCompile Include="lzma\Delta.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\LzFind.c">
+    <ClCompile Include="lzma\LzFind.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\LzFindMt.c">
+    <ClCompile Include="lzma\LzFindMt.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\LzFindOpt.c">
+    <ClCompile Include="lzma\Lzma2Dec.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\Lzma2Dec.c">
+    <ClCompile Include="lzma\Lzma2DecMt.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\Lzma2DecMt.c">
+    <ClCompile Include="lzma\Lzma2Enc.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\Lzma2Enc.c">
+    <ClCompile Include="lzma\LzmaDec.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\LzmaDec.c">
+    <ClCompile Include="lzma\LzmaEnc.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\LzmaEnc.c">
+    <ClCompile Include="lzma\LzmaLib.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\LzmaLib.c">
+    <ClCompile Include="lzma\MtCoder.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\MtCoder.c">
+    <ClCompile Include="lzma\MtDec.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\MtDec.c">
+    <ClCompile Include="lzma\Ppmd7.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\Ppmd7.c">
+    <ClCompile Include="lzma\Sha256.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\Ppmd7Dec.c">
+    <ClCompile Include="lzma\Sort.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\Ppmd7Enc.c">
+    <ClCompile Include="lzma\Threads.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\Sha256.c">
+    <ClCompile Include="lzma\Xz.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\Sha256Opt.c">
+    <ClCompile Include="lzma\XzCrc64.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
-    <ClCompile Include="lzma\Sort.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="lzma\Threads.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="lzma\Xz.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="lzma\XzCrc64.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="lzma\XzCrc64Opt.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="lzma\XzDec.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="lzma\XzEnc.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="lzma\XzIn.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="lzma\7zCrc.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="lzma\7zCrcOpt.c">
-      <Filter>lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="lzma\7zStream.c">
+    <ClCompile Include="lzma\XzEnc.cpp">
       <Filter>lzma</Filter>
     </ClCompile>
   </ItemGroup>
@@ -241,9 +211,6 @@
       <Filter>lzma</Filter>
     </ClInclude>
     <ClInclude Include="lzma\Ppmd7.h">
-      <Filter>lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="lzma\Precomp.h">
       <Filter>lzma</Filter>
     </ClInclude>
     <ClInclude Include="lzma\RotateDefs.h">

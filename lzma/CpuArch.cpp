@@ -1,8 +1,6 @@
 /* CpuArch.c -- CPU specific code
 2021-07-13 : Igor Pavlov : Public domain */
 
-#include "Precomp.h"
-
 #include "CpuArch.h"
 
 #ifdef MY_CPU_X86_OR_AMD64

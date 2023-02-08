@@ -1,15 +1,13 @@
 /* Threads.c -- multithreading library
 2021-12-21 : Igor Pavlov : Public domain */
 
-#include "Precomp.h"
+#include "Threads.h"
 
 #ifdef _WIN32
 
 #ifndef USE_THREADS_CreateThread
 #include <process.h>
 #endif
-
-#include "Threads.h"
 
 static WRes GetError()
 {

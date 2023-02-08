@@ -1,8 +1,6 @@
 /* MtCoder.c -- Multi-thread Coder
 2021-12-21 : Igor Pavlov : Public domain */
 
-#include "Precomp.h"
-
 #include "MtCoder.h"
 
 #ifndef _7ZIP_ST

@@ -1,23 +1,22 @@
 /* Alloc.c -- Memory allocation functions
 2021-07-13 : Igor Pavlov : Public domain */
 
-#include "Precomp.h"
+#include "Alloc.h"
 
-#include <stdio.h>
+#include "Compiler.h"
+
+#include <cstdio>
 
 #ifdef _WIN32
 #include <Windows.h>
 #endif
-#include <stdlib.h>
-
-#include "Alloc.h"
+#include <cstdlib>
 
 /* #define _SZ_ALLOC_DEBUG */
 
 /* use _SZ_ALLOC_DEBUG to debug alloc/free operations */
 #ifdef _SZ_ALLOC_DEBUG
 
-#include <stdio.h>
 int g_allocCount = 0;
 int g_allocCountMid = 0;
 int g_allocCountBig = 0;

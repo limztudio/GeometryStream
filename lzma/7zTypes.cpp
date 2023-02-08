@@ -1,11 +1,9 @@
 /* 7zStream.c -- 7z Stream functions
 2021-02-09 : Igor Pavlov : Public domain */
 
-#include "Precomp.h"
-
-#include <string.h>
-
 #include "7zTypes.h"
+
+#include <cstring>
 
 SRes SeqInStream_Read2(const ISeqInStream *stream, void *buf, size_t size, SRes errorType)
 {

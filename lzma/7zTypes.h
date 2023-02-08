@@ -7,10 +7,10 @@
 #ifdef _WIN32
 /* #include <windows.h> */
 #else
-#include <errno.h>
+#include <cerrno>
 #endif
 
-#include <stddef.h>
+#include <cstddef>
 
 #ifndef EXTERN_C_BEGIN
 #ifdef __cplusplus

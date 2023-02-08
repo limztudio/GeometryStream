@@ -87,17 +87,13 @@
     <ClCompile Include="fpzip\write.cpp" />
     <ClCompile Include="GeometryIO.cpp" />
     <ClCompile Include="lzma\7zCrc.cpp" />
-    <ClCompile Include="lzma\7zCrcOpt.cpp" />
-    <ClCompile Include="lzma\7zStream.cpp" />
+    <ClCompile Include="lzma\7zTypes.cpp" />
     <ClCompile Include="lzma\Alloc.cpp" />
     <ClCompile Include="lzma\Bra.cpp" />
-    <ClCompile Include="lzma\Bra86.cpp" />
-    <ClCompile Include="lzma\BraIA64.cpp" />
     <ClCompile Include="lzma\CpuArch.cpp" />
     <ClCompile Include="lzma\Delta.cpp" />
     <ClCompile Include="lzma\LzFind.cpp" />
     <ClCompile Include="lzma\LzFindMt.cpp" />
-    <ClCompile Include="lzma\LzFindOpt.cpp" />
     <ClCompile Include="lzma\Lzma2Dec.cpp" />
     <ClCompile Include="lzma\Lzma2DecMt.cpp" />
     <ClCompile Include="lzma\Lzma2Enc.cpp" />
@@ -107,18 +103,12 @@
     <ClCompile Include="lzma\MtCoder.cpp" />
     <ClCompile Include="lzma\MtDec.cpp" />
     <ClCompile Include="lzma\Ppmd7.cpp" />
-    <ClCompile Include="lzma\Ppmd7Dec.cpp" />
-    <ClCompile Include="lzma\Ppmd7Enc.cpp" />
     <ClCompile Include="lzma\Sha256.cpp" />
-    <ClCompile Include="lzma\Sha256Opt.cpp" />
     <ClCompile Include="lzma\Sort.cpp" />
     <ClCompile Include="lzma\Threads.cpp" />
     <ClCompile Include="lzma\Xz.cpp" />
     <ClCompile Include="lzma\XzCrc64.cpp" />
-    <ClCompile Include="lzma\XzCrc64Opt.cpp" />
-    <ClCompile Include="lzma\XzDec.cpp" />
     <ClCompile Include="lzma\XzEnc.cpp" />
-    <ClCompile Include="lzma\XzIn.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -164,7 +154,6 @@
     <ClInclude Include="lzma\MtDec.h" />
     <ClInclude Include="lzma\Ppmd.h" />
     <ClInclude Include="lzma\Ppmd7.h" />
-    <ClInclude Include="lzma\Precomp.h" />
     <ClInclude Include="lzma\RotateDefs.h" />
     <ClInclude Include="lzma\Sha256.h" />
     <ClInclude Include="lzma\Sort.h" />

@@ -1,10 +1,11 @@
 /* LzmaLib.c -- LZMA library wrapper
 2015-06-13 : Igor Pavlov : Public domain */
 
+#include "LzmaLib.h"
+
 #include "Alloc.h"
 #include "LzmaDec.h"
 #include "LzmaEnc.h"
-#include "LzmaLib.h"
 
 MY_STDAPI LzmaCompress(unsigned char *dest, size_t *destLen, const unsigned char *src, size_t srcLen,
   unsigned char *outProps, size_t *outPropsSize,

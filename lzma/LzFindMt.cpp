@@ -1,28 +1,29 @@
 /* LzFindMt.c -- multithreaded Match finder for LZ algorithms
 2021-12-21 : Igor Pavlov : Public domain */
 
-#include "Precomp.h"
+#include "LzFindMt.h"
 
-// #include <stdio.h>
+#include "Compiler.h"
+
+// #include <cstdio>
 
 #include "CpuArch.h"
 
 #include "LzHash.h"
-#include "LzFindMt.h"
 
 // #define LOG_ITERS
 
 // #define LOG_THREAD
 
 #ifdef LOG_THREAD
-#include <stdio.h>
+#include <cstdio>
 #define PRF(x) x
 #else
 #define PRF(x)
 #endif
 
 #ifdef LOG_ITERS
-#include <stdio.h>
+#include <cstdio>
 extern UInt64 g_NumIters_Tree;
 extern UInt64 g_NumIters_Loop;
 extern UInt64 g_NumIters_Bytes;
