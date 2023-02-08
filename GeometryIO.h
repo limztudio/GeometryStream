@@ -18,6 +18,60 @@ namespace __hidden_GeometryIOProcessor
 	class CustomIO;
 
 	
+	static bool Memcpy(void* Dest, const void* Src, unsigned long long Len)
+	{
+		return (memcpy_s(Dest, Len, Src, Len) == 0);
+	}
+	template<typename T>
+	static bool MemcpyAndMove(T*& Dest, const void* Src, unsigned long long Len)
+	{
+		const bool bRes = Memcpy(Dest, Src, Len);
+		
+		unsigned char* Ptr = reinterpret_cast<unsigned char*>(Dest);
+		Ptr += Len;
+		Dest = reinterpret_cast<T*>(Ptr);
+		
+		return bRes;
+	}
+
+	template<typename T, unsigned long long N = sizeof(T)>
+	static bool Memset(T* Dest, const T& V, unsigned long long Len)
+	{
+		bool bRes = true;
+		
+		unsigned long long i = 0u;
+		for (unsigned char* Ptr = reinterpret_cast<unsigned char*>(Dest); i < Len; i += N)
+		{
+			if (!MemcpyAndMove(Ptr, &V, N))
+			{
+				bRes = false;
+			}
+		}
+		if (i > Len)
+		{
+			i -= N;
+			Len -= i;
+			if (!Memcpy(reinterpret_cast<unsigned char*>(Dest) + i, &V, Len))
+			{
+				bRes = false;
+			}
+		}
+
+		return bRes;
+	}
+	template<typename T, unsigned long long N = sizeof(T)>
+	static bool MemsetAndMove(T*& Dest, const T& V, unsigned long long Len)
+	{
+		const bool bRes = Memset<T, N>(Dest, V, Len);
+
+		unsigned char* Ptr = reinterpret_cast<unsigned char*>(Dest);
+		Ptr += Len;
+		Dest = reinterpret_cast<T*>(Ptr);
+		
+		return bRes;
+	}
+
+	
 	extern void* CurGeometryIOProcessorAlloc(CustomIO*, unsigned long long);
 	extern void CurGeometryIOProcessorFree(CustomIO*, void*);
 
@@ -139,7 +193,7 @@ namespace __hidden_GeometryIOProcessor
 			else if (AssignedSize < NewSize)
 			{
 				Buffer = reinterpret_cast<BufferType*>(CurIO->CustomAlloc(NewSize * sizeof(BufferType)));
-				memcpy_s(Buffer, NewSize * sizeof(BufferType), OldBuffer, AssignedSize * sizeof(BufferType));
+				Memcpy(Buffer, OldBuffer, AssignedSize * sizeof(BufferType));
 				CurIO->CustomFree(OldBuffer);
 				AssignedSize = NewSize;
 			}
@@ -224,12 +278,13 @@ public:
 		unsigned long long* EncodedSize,
 		unsigned char** EncodedData,
 
-		unsigned long OptionalEncodeOffset = ENCODE_OFFSET
+		unsigned long OptionalEncodeOffset = ENCODE_OFFSET,
+		bool OptionalUseFloat32Vertex = false
 		);
 
 	
 private:
-	bool Pack();
+	bool Pack(bool bUseFloat32);
 	
 private:
 	bool ShouldConvertToFloat(unsigned long VertCount, unsigned long IndCount, const double* Verts, const unsigned long* Inds);
@@ -311,6 +366,7 @@ public:
 		, HeaderNames(this)
 		, HeaderMinMaxes(this)
 		, Temporal(this)
+		, TemporalErrorMsg(this)
 		, Handle(nullptr)
 		, FileBegin(0u)
 		, GeometryCount(0u)
@@ -318,10 +374,49 @@ public:
 
 
 public:
-	const char* GetLastError() const
+	inline const char* GetLastError() const
 	{
 		return GeometryWriter::GetLastError();
 	}
+
+	
+public:
+	template<typename FUNC>
+	bool ScopedWrite(void* _Handle, FUNC&& Func)
+	{
+		if (!BeginWrite(_Handle))
+		{
+			return false;
+		}
+
+		const bool bSucceeded = Func();
+		if (!bSucceeded)
+		{
+			const unsigned long long LenMsg = ErrorMsg.Size();
+			if (LenMsg > 0u)
+			{
+				TemporalErrorMsg.Resize(LenMsg);
+				__hidden_GeometryIOProcessor::Memcpy(TemporalErrorMsg.Get(), ErrorMsg.Get(), LenMsg);
+			}
+		}
+
+		if (!EndWrite())
+		{
+			if (!bSucceeded)
+			{
+				const unsigned long long LenMsg = TemporalErrorMsg.Size();
+				if (LenMsg > 0u)
+				{
+					ErrorMsg.Resize(LenMsg);
+					__hidden_GeometryIOProcessor::Memcpy(ErrorMsg.Get(), TemporalErrorMsg.Get(), LenMsg);
+				}
+			}
+			return false;
+		}
+
+		return true;
+	}
+	
 	
 public:
 	bool BeginWrite(void* _Handle);
@@ -340,7 +435,8 @@ public:
 		const double* Verts,
 		const unsigned long* Inds,
 
-		unsigned long OptionalEncodeOffset = ENCODE_OFFSET
+		unsigned long OptionalEncodeOffset = ENCODE_OFFSET,
+		bool OptionalUseFloat32Vertex = false
 		);
 
 
@@ -349,6 +445,7 @@ private:
 	__hidden_GeometryIOProcessor::TempBuffer<__hidden_GeometryIOProcessor::MinMax> HeaderMinMaxes;
 	
 	__hidden_GeometryIOProcessor::TempBuffer<unsigned char> Temporal;
+	decltype(ErrorMsg) TemporalErrorMsg;
 	
 private:
 	void* Handle;
@@ -367,16 +464,56 @@ public:
 		, HeaderNames(this)
 		, HeaderMinMaxes(this)
 		, Temporal(this)
+		, TemporalErrorMsg(this)
 		, Handle(nullptr)
 		, FileBegin(0u)
 	{}
 
 
 public:
-	const char* GetLastError() const
+	inline const char* GetLastError() const
 	{
 		return GeometryReader::GetLastError();
 	}
+
+
+public:
+	template<typename FUNC>
+	bool ScopedRead(void* _Handle, FUNC&& Func)
+	{
+		if (!BeginRead(_Handle))
+		{
+			return false;
+		}
+
+		const bool bSucceeded = Func();
+		if (!bSucceeded)
+		{
+			const unsigned long long LenMsg = ErrorMsg.Size();
+			if (LenMsg > 0u)
+			{
+				TemporalErrorMsg.Resize(LenMsg);
+				__hidden_GeometryIOProcessor::Memcpy(TemporalErrorMsg.Get(), ErrorMsg.Get(), LenMsg);
+			}
+		}
+
+		if (!EndRead())
+		{
+			if (!bSucceeded)
+			{
+				const unsigned long long LenMsg = TemporalErrorMsg.Size();
+				if (LenMsg > 0u)
+				{
+					ErrorMsg.Resize(LenMsg);
+					__hidden_GeometryIOProcessor::Memcpy(ErrorMsg.Get(), TemporalErrorMsg.Get(), LenMsg);
+				}
+			}
+			return false;
+		}
+
+		return true;
+	}
+	
 	
 public:
 	bool BeginRead(void* _Handle);
@@ -417,6 +554,25 @@ public:
 		double** Verts,
 		unsigned long** Inds
 		);
+	bool GetGeometry(
+		unsigned long Index,
+		double* Scale,
+		double* Rotation,
+		double* Position,
+		unsigned long* VertCount,
+		unsigned long* IndCount,
+		float** Verts,
+		unsigned long** Inds
+	);
+	bool GetGeometry(
+		unsigned long Index,
+		double* Rotation,
+		double* Position,
+		unsigned long* VertCount,
+		unsigned long* IndCount,
+		float** Verts,
+		unsigned long** Inds
+	);
 	
 
 private:
@@ -425,56 +581,11 @@ private:
 	__hidden_GeometryIOProcessor::TempBuffer<__hidden_GeometryIOProcessor::MinMax> HeaderMinMaxes;
 	
 	__hidden_GeometryIOProcessor::TempBuffer<unsigned char> Temporal;
+	decltype(ErrorMsg) TemporalErrorMsg;
 	
 private:
 	void* Handle;
 	unsigned long long FileBegin;
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-template<typename T>
-class GeometryStreamScopedIO
-{};
-
-template<>
-class GeometryStreamScopedIO<GeometryStreamWriter>
-{
-public:
-	GeometryStreamScopedIO(GeometryStreamWriter& _Obj, void* Handle)
-		: Obj(_Obj)
-	{
-		Obj.BeginWrite(Handle);
-	}
-	~GeometryStreamScopedIO()
-	{
-		Obj.EndWrite();
-	}
-
-
-private:
-	GeometryStreamWriter& Obj;
-};
-
-template<>
-class GeometryStreamScopedIO<GeometryStreamReader>
-{
-public:
-	GeometryStreamScopedIO(GeometryStreamReader& _Obj, void* Handle)
-		: Obj(_Obj)
-	{
-		Obj.BeginRead(Handle);
-	}
-	~GeometryStreamScopedIO()
-	{
-		Obj.EndRead();
-	}
-
-
-private:
-	GeometryStreamReader& Obj;
 };
 
 

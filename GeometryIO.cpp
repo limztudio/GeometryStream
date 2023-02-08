@@ -158,8 +158,8 @@ namespace __hidden_GeometryIOProcessor
 		const unsigned long long MsgLen = strlen(Msg);
 		const unsigned long long TotalLen = PrefixLen + MsgLen + 1;
 		Buffer->Resize(TotalLen);
-		memcpy_s(Buffer->Get(), PrefixLen, ERRPrefixFPZIP, PrefixLen);
-		memcpy_s(Buffer->Get() + TotalLen, MsgLen, Msg, MsgLen);
+		Memcpy(Buffer->Get(), ERRPrefixFPZIP, PrefixLen);
+		Memcpy(Buffer->Get() + TotalLen, Msg, MsgLen);
 		*(Buffer->Get() + (TotalLen - 1)) = 0u;
 	}
 	
@@ -221,8 +221,8 @@ namespace __hidden_GeometryIOProcessor
 		const unsigned long long MsgLen = strlen(Msg);
 		const unsigned long long TotalLen = PrefixLen + MsgLen + 1;
 		Buffer->Resize(TotalLen);
-		memcpy_s(Buffer->Get(), PrefixLen, ERRPrefixLZMA, PrefixLen);
-		memcpy_s(Buffer->Get() + TotalLen, MsgLen, Msg, MsgLen);
+		Memcpy(Buffer->Get(), ERRPrefixLZMA, PrefixLen);
+		Memcpy(Buffer->Get() + TotalLen, Msg, MsgLen);
 		*(Buffer->Get() + (TotalLen - 1)) = 0u;
 	}
 
@@ -333,7 +333,8 @@ bool GeometryWriter::Encode(
 	unsigned long long* EncodedSize,
 	unsigned char** EncodedData,
 
-	unsigned long OptionalEncodeOffset
+	unsigned long OptionalEncodeOffset,
+	bool OptionalUseFloat32Vertex
 	)
 {
 	{
@@ -348,29 +349,21 @@ bool GeometryWriter::Encode(
 		TempSrcForEncoding.Resize(InitLen);
 		unsigned char* Ptr = TempSrcForEncoding.Get();
 
-		memcpy_s(Ptr, 3u << 3u, Scale, 3u << 3u);
-		Ptr += (3u << 3u);
-		memcpy_s(Ptr, 3u << 4u, Rotation, 3u << 4u);
-		Ptr += (4u << 3u);
-		memcpy_s(Ptr, 3u << 3u, Position, 3u << 3u);
-		Ptr += (3u << 3u);
+		__hidden_GeometryIOProcessor::MemcpyAndMove(Ptr, Scale, 3u << 3u);
+		__hidden_GeometryIOProcessor::MemcpyAndMove(Ptr, Rotation, 4u << 3u);
+		__hidden_GeometryIOProcessor::MemcpyAndMove(Ptr, Position, 3u << 3u);
 		
-		memcpy_s(Ptr, 4u, &VertCount, 4u);
-		Ptr += 4u;
-		memcpy_s(Ptr, 4u, &IndCount, 4u);
-		Ptr += 4u;
+		__hidden_GeometryIOProcessor::MemcpyAndMove(Ptr, &VertCount, 4u);
+		__hidden_GeometryIOProcessor::MemcpyAndMove(Ptr, &IndCount, 4u);
 		
-		memset(Ptr, 0, 8u);
-		Ptr += 8u;
-		memset(Ptr, 0, 8u);
-		Ptr += 8u;
+		__hidden_GeometryIOProcessor::MemsetAndMove(Ptr, static_cast<unsigned char>(0), 8u);
+		__hidden_GeometryIOProcessor::MemsetAndMove(Ptr, static_cast<unsigned char>(0), 8u);
 
-		memcpy_s(Ptr, VertLen, Verts, VertLen);
-		Ptr += VertLen;
-		memcpy_s(Ptr, IndLen, Inds, IndLen);
+		__hidden_GeometryIOProcessor::MemcpyAndMove(Ptr, Verts, VertLen);
+		__hidden_GeometryIOProcessor::Memcpy(Ptr, Inds, IndLen);
 	}
 	
-	if (!Pack())
+	if (!Pack(OptionalUseFloat32Vertex))
 	{
 		return false;
 	}
@@ -433,15 +426,15 @@ bool GeometryWriter::Encode(
 			{
 				const unsigned long long BufferSize = srcLen | 0x8000000000000000;
 			
-				memcpy_s(TempDestForEncoding.Get(), 8u, &BufferSize, 8u);
-				memcpy_s(TempDestForEncoding.Get() + 8u, TempDestForEncoding.Size() - 8u, TempSrcForEncoding.Get(), TempSrcForEncoding.Size());
+				__hidden_GeometryIOProcessor::Memcpy(TempDestForEncoding.Get(), &BufferSize, 8u);
+				__hidden_GeometryIOProcessor::Memcpy(TempDestForEncoding.Get() + 8u, TempSrcForEncoding.Get(), TempSrcForEncoding.Size());
 				TempDestForEncoding.Resize(8u + TempSrcForEncoding.Size());
 			}
 			else
 			{
 				const unsigned long long BufferSize = srcLen & 0x7FFFFFFFFFFFFFFF;
 			
-				memcpy_s(TempDestForEncoding.Get(), 8u, &BufferSize, 8u);
+				__hidden_GeometryIOProcessor::Memcpy(TempDestForEncoding.Get(), &BufferSize, 8u);
 				TempDestForEncoding.Resize(8u + PropSize + destLen);
 			}
 		}
@@ -533,7 +526,7 @@ bool GeometryReader::Decode(
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-bool GeometryWriter::Pack()
+bool GeometryWriter::Pack(bool bUseFloat32)
 {
 	unsigned char* Ptr = TempSrcForEncoding.Get();
 
@@ -558,9 +551,12 @@ bool GeometryWriter::Pack()
 	Ptr += VertCount << 3u;
 	unsigned char* Inds = Ptr;
 
-	const bool bShouldConvertToFloat = ShouldConvertToFloat(VertCount, IndCount, reinterpret_cast<const double*>(Verts), reinterpret_cast<const unsigned long*>(Inds));
+	if (!bUseFloat32)
+	{
+		bUseFloat32 = ShouldConvertToFloat(VertCount, IndCount, reinterpret_cast<const double*>(Verts), reinterpret_cast<const unsigned long*>(Inds));
+	}
 	
-	if (!PackVerts(bShouldConvertToFloat, VertCount, PackVertCount, Verts))
+	if (!PackVerts(bUseFloat32, VertCount, PackVertCount, Verts))
 	{
 		return false;
 	}
@@ -585,12 +581,12 @@ bool GeometryWriter::Pack()
 
 bool GeometryReader::Unpack(const unsigned char* Ptr, double* Scale, double* Rotation, double* Position, unsigned long* VertCount, unsigned long* IndCount)
 {
-	memcpy_s(Scale, 3u << 3u, Ptr, 3u << 3u);
-	Ptr += 3u << 3u;
-	memcpy_s(Rotation, 4u << 3u, Ptr, 4u << 3u);
-	Ptr += 4u << 3u;
-	memcpy_s(Position, 3u << 3u, Ptr, 3u << 3u);
-	Ptr += 3u << 3u;
+	__hidden_GeometryIOProcessor::Memcpy(Scale, Ptr, 3u << 3u);
+	Ptr += (3u << 3u);
+	__hidden_GeometryIOProcessor::Memcpy(Rotation, Ptr, 4u << 3u);
+	Ptr += (4u << 3u);
+	__hidden_GeometryIOProcessor::Memcpy(Position, Ptr, 3u << 3u);
+	Ptr += (3u << 3u);
 	
 	(*VertCount) = *reinterpret_cast<const unsigned long*>(Ptr);
 	Ptr += 4u;
@@ -833,12 +829,12 @@ bool GeometryWriter::PackVerts(bool bFloatInRange, unsigned long SrcCount, unsig
 	
 	if (bFloatInRange)
 	{
-		memcpy_s(Data, SrcCount << 2u, TempDestForEncoding.Get(), TempDestForEncoding.Size());
+		__hidden_GeometryIOProcessor::Memcpy(Data, TempDestForEncoding.Get(), TempDestForEncoding.Size());
 		(*DestCount) = static_cast<unsigned long long>(TempDestForEncoding.Size()) | 0x8000000000000000;
 	}
 	else
 	{
-		memcpy_s(Data, SrcCount << 3u, TempDestForEncoding.Get(), TempDestForEncoding.Size());
+		__hidden_GeometryIOProcessor::Memcpy(Data, TempDestForEncoding.Get(), TempDestForEncoding.Size());
 		(*DestCount) = static_cast<unsigned long long>(TempDestForEncoding.Size()) & 0x7FFFFFFFFFFFFFFF;
 	}
 
@@ -931,7 +927,7 @@ void GeometryWriter::PackInds(unsigned long VertCount, unsigned long SrcCount, u
 	}
 	
 	(*DestCount) = static_cast<unsigned long long>(TempDestForEncoding.Size());
-	memcpy_s(Data, SrcCount << 2u, TempDestForEncoding.Get(), TempDestForEncoding.Size());
+	__hidden_GeometryIOProcessor::Memcpy(Data, TempDestForEncoding.Get(), TempDestForEncoding.Size());
 }
 
 void GeometryReader::UnpackInds(unsigned long VertCount, unsigned long SrcCount, const void* InData, void* OutData)
@@ -1072,7 +1068,7 @@ bool GeometryStreamReader::BeginRead(void* _Handle)
 			}
 
 			unsigned long long GeometryCount;
-			memcpy_s(&GeometryCount, sizeof(GeometryCount), PtrDest, sizeof(GeometryCount));
+			__hidden_GeometryIOProcessor::Memcpy(&GeometryCount, PtrDest, sizeof(GeometryCount));
 			PtrDest += sizeof(GeometryCount);
 
 			if (GeometryCount == static_cast<unsigned long long>(-1))
@@ -1090,7 +1086,7 @@ bool GeometryStreamReader::BeginRead(void* _Handle)
 				wchar_t Chr = 0;
 				do
 				{
-					memcpy_s(&Chr, sizeof(Chr), PtrDest, sizeof(Chr));
+					__hidden_GeometryIOProcessor::Memcpy(&Chr, PtrDest, sizeof(Chr));
 					PtrDest += sizeof(Chr);
 
 					HeaderRawNames.Resize(HeaderRawNames.Size() + 1u);
@@ -1099,7 +1095,7 @@ bool GeometryStreamReader::BeginRead(void* _Handle)
 				while (Chr != 0);
 			}
 
-			memcpy_s(HeaderMinMaxes.Get(), GeometryCount * sizeof(__hidden_GeometryIOProcessor::MinMax), PtrDest, GeometryCount * sizeof(__hidden_GeometryIOProcessor::MinMax));
+			__hidden_GeometryIOProcessor::Memcpy(HeaderMinMaxes.Get(), PtrDest, GeometryCount * sizeof(__hidden_GeometryIOProcessor::MinMax));
 		}
 		else
 		{
@@ -1201,11 +1197,9 @@ bool GeometryStreamWriter::EndWrite()
 		{
 			unsigned char* Ptr = Temporal.Get();
 			
-			memcpy_s(Ptr, sizeof(GeometryCount), &GeometryCount, sizeof(GeometryCount));
-			Ptr += sizeof(GeometryCount);
-			memcpy_s(Ptr, HeaderNames.Size() * sizeof(wchar_t), HeaderNames.Get(), HeaderNames.Size() * sizeof(wchar_t));
-			Ptr += (HeaderNames.Size() * sizeof(wchar_t));
-			memcpy_s(Ptr, HeaderMinMaxes.Size() * sizeof(__hidden_GeometryIOProcessor::MinMax), HeaderMinMaxes.Get(), HeaderMinMaxes.Size() * sizeof(__hidden_GeometryIOProcessor::MinMax));
+			__hidden_GeometryIOProcessor::MemcpyAndMove(Ptr, &GeometryCount, sizeof(GeometryCount));
+			__hidden_GeometryIOProcessor::MemcpyAndMove(Ptr, HeaderNames.Get(), HeaderNames.Size() * sizeof(wchar_t));
+			__hidden_GeometryIOProcessor::Memcpy(Ptr, HeaderMinMaxes.Get(), HeaderMinMaxes.Size() * sizeof(__hidden_GeometryIOProcessor::MinMax));
 		}
 
 #ifdef USE_LZMA2
@@ -1246,10 +1240,10 @@ bool GeometryStreamWriter::EndWrite()
 			unsigned char* Ptr = Temporal.Get() + SrcSize;
 			{
 				unsigned long WriteSize = static_cast<unsigned long>(SrcSize);
-				memcpy_s(Ptr, 4u, &WriteSize, 4u);
+				__hidden_GeometryIOProcessor::Memcpy(Ptr, &WriteSize, 4u);
 				
 				WriteSize = static_cast<unsigned long>(DestSize);
-				memcpy_s(Ptr + 4u, 4u, &WriteSize, 4u);
+				__hidden_GeometryIOProcessor::Memcpy(Ptr + 4u, &WriteSize, 4u);
 			}
 
 			if (!CustomWrite(Handle, 8u + PropSize + DestSize, Ptr))
@@ -1315,12 +1309,13 @@ unsigned long long GeometryStreamWriter::EmplaceGeometry(
 	const double* Verts,
 	const unsigned long* Inds,
 
-	unsigned long OptionalEncodeOffset
+	unsigned long OptionalEncodeOffset,
+	bool OptionalUseFloat32Vertex
 	)
 {
 	unsigned long long EncodedSize;
 	unsigned char* EncodedData;
-	if (!Encode(Scale, Rotation, Position, VertCount, IndCount, Verts, Inds, &EncodedSize, &EncodedData, OptionalEncodeOffset))
+	if (!Encode(Scale, Rotation, Position, VertCount, IndCount, Verts, Inds, &EncodedSize, &EncodedData, OptionalEncodeOffset, OptionalUseFloat32Vertex))
 	{
 		return static_cast<unsigned long long>(-1);
 	}
@@ -1403,8 +1398,8 @@ unsigned long long GeometryStreamWriter::EmplaceGeometry(
 			}
 		}
 
-		memcpy_s(GeometryMinMax.Min, sizeof(GeometryMinMax.Min), GeometryMin, sizeof(GeometryMin));
-		memcpy_s(GeometryMinMax.Max, sizeof(GeometryMinMax.Max), GeometryMax, sizeof(GeometryMax));
+		__hidden_GeometryIOProcessor::Memcpy(GeometryMinMax.Min, GeometryMin, sizeof(GeometryMin));
+		__hidden_GeometryIOProcessor::Memcpy(GeometryMinMax.Max, GeometryMax, sizeof(GeometryMax));
 	}
 	
 	{
@@ -1413,14 +1408,14 @@ unsigned long long GeometryStreamWriter::EmplaceGeometry(
 		
 		HeaderNames.Resize(OldSize + IDLen + 1u);
 
-		memcpy_s(HeaderNames.Get() + OldSize, IDLen * sizeof(wchar_t), ID, IDLen * sizeof(wchar_t));
+		__hidden_GeometryIOProcessor::Memcpy(HeaderNames.Get() + OldSize, ID, IDLen * sizeof(wchar_t));
 		*(HeaderNames.Get() + HeaderNames.Size() - 1u) = 0u;
 	}
 	{
 		const unsigned long long OldSize = HeaderMinMaxes.Size();
 		
 		HeaderMinMaxes.Resize(OldSize + 1u);
-		memcpy_s(HeaderMinMaxes.Get() + OldSize, sizeof(GeometryMinMax), &GeometryMinMax, sizeof(GeometryMinMax));
+		__hidden_GeometryIOProcessor::Memcpy(HeaderMinMaxes.Get() + OldSize, &GeometryMinMax, sizeof(GeometryMinMax));
 	}
 	
 	return ++GeometryCount;
@@ -1507,6 +1502,80 @@ bool GeometryStreamReader::GetGeometry(
 		(*(Ptr + 2)) *= Scale[2];
 	}
 
+	return true;
+}
+bool GeometryStreamReader::GetGeometry(
+	unsigned long Index,
+	double* Scale,
+	double* Rotation,
+	double* Position,
+	unsigned long* VertCount,
+	unsigned long* IndCount,
+	float** Verts,
+	unsigned long** Inds
+)
+{
+	double** RawVerts = nullptr;
+	if (!GetGeometry(
+	Index,
+	Scale,
+	Rotation,
+	Position,
+	VertCount,
+	IndCount,
+	RawVerts,
+	Inds
+	))
+	{
+		return false;
+	}
+
+	const double* Verts64 = (*RawVerts);
+	float* Verts32 = reinterpret_cast<float*>(*RawVerts);
+	for (const double* Verts64End = Verts64 + (*VertCount); Verts64 != Verts64End; ++Verts64, ++Verts32)
+	{
+		(*Verts32) = static_cast<float>(*Verts64);
+	}
+
+	(*Verts) = Verts32;
+	return true;
+}
+bool GeometryStreamReader::GetGeometry(
+	unsigned long Index,
+	double* Rotation,
+	double* Position,
+	unsigned long* VertCount,
+	unsigned long* IndCount,
+	float** Verts,
+	unsigned long** Inds
+)
+{
+	double Scale[3] = { 1., 1., 1. };
+	double** RawVerts = nullptr;
+	if (!GetGeometry(
+	Index,
+	Scale,
+	Rotation,
+	Position,
+	VertCount,
+	IndCount,
+	RawVerts,
+	Inds
+	))
+	{
+		return false;
+	}
+
+	const double* Verts64 = (*RawVerts);
+	float* Verts32 = reinterpret_cast<float*>(*RawVerts);
+	for (const double* Verts64End = Verts64 + (*VertCount); Verts64 != Verts64End; Verts64 += 3u, Verts32 += 3u)
+	{
+		(*Verts32) = static_cast<float>((*Verts64) * Scale[0]);
+		(*(Verts32 + 1u)) = static_cast<float>((*(Verts64 + 1u)) * Scale[1]);
+		(*(Verts32 + 2u)) = static_cast<float>((*(Verts64 + 2u)) * Scale[2]);
+	}
+
+	(*Verts) = Verts32;
 	return true;
 }
 

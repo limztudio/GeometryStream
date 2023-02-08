@@ -327,9 +327,8 @@ int main()
 		{
 			GeometryStreamWriter Processor(malloc, free, CustomFileTell, CustomFileJump, CustomFileWrite);
 
+			if (!Processor.ScopedWrite(f, [&]()
 			{
-				GeometryStreamScopedIO<GeometryStreamWriter> IO(Processor, f);
-
 				for (const Geometry& i : Geoms)
 				{
 					if (Processor.EmplaceGeometry(
@@ -343,10 +342,15 @@ int main()
 						i.Inds.data()
 						) == static_cast<unsigned long long>(-1))
 					{
-						std:: cout << Processor.GetLastError() << std::endl;
-						break;
+						return false;
 					}
 				}
+
+				return true;
+			}))
+			{
+				std:: cout << Processor.GetLastError() << std::endl;
+				break;
 			}
 		}
 		while (false);
@@ -375,16 +379,15 @@ int main()
 		{
 			GeometryStreamReader Processor(malloc, free, CustomFileTell, CustomFileJump, CustomFileRead);
 
+			if (!Processor.ScopedRead(f, [&]()
 			{
-				GeometryStreamScopedIO<GeometryStreamReader> IO(Processor, f);
-
 				unsigned long e = Processor.GetGeometryCount();
 				DecGeoms.resize(e);
-				
+
 				for(unsigned long i = 0u; i < e; ++i)
 				{
 					Geometry& p = DecGeoms[i];
-					
+
 					p.Name = Processor.GetGeometryName(i);
 
 					unsigned long VertCount;
@@ -402,8 +405,7 @@ int main()
 						&Inds
 						))
 					{
-						std:: cout << Processor.GetLastError() << std::endl;
-						break;
+						return false;
 					}
 
 					p.Verts.resize(VertCount);
@@ -412,6 +414,12 @@ int main()
 					p.Inds.resize(IndCount);
 					memcpy_s(p.Inds.data(), IndCount << 2u, Inds, IndCount << 2u);
 				}
+
+				return true;
+			}))
+			{
+				std:: cout << Processor.GetLastError() << std::endl;
+				break;
 			}
 		}
 		while (false);
