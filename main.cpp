@@ -19,7 +19,7 @@ struct Geometry
 };
 
 
-unsigned long long _rand()
+static unsigned long long _rand()
 {
 	// xorshift*
 
@@ -29,7 +29,7 @@ unsigned long long _rand()
 	X ^= X >> 27;
 	return X * 0x2545F4914F6CDD1DULL;
 }
-double _randD()
+static double _randD()
 {
 	return static_cast<double>(_rand() & 0x00ffffffffffffff) / 72057594037927936.;
 }
@@ -327,8 +327,9 @@ int main()
 		{
 			GeometryStreamWriter Processor(malloc, free, CustomFileTell, CustomFileJump, CustomFileWrite);
 
-			if (!Processor.ScopedWrite(f, [&]()
 			{
+				GeometryStreamScopedIO<GeometryStreamWriter> IO(Processor, f);
+
 				for (const Geometry& i : Geoms)
 				{
 					if (Processor.EmplaceGeometry(
@@ -343,14 +344,9 @@ int main()
 						) == static_cast<unsigned long long>(-1))
 					{
 						std:: cout << Processor.GetLastError() << std::endl;
-						return false;
+						break;
 					}
 				}
-				
-				return true;
-			}))
-			{
-				break;
 			}
 		}
 		while (false);
@@ -379,8 +375,9 @@ int main()
 		{
 			GeometryStreamReader Processor(malloc, free, CustomFileTell, CustomFileJump, CustomFileRead);
 
-			if (!Processor.ScopedRead(f, [&]()
 			{
+				GeometryStreamScopedIO<GeometryStreamReader> IO(Processor, f);
+
 				unsigned long e = Processor.GetGeometryCount();
 				DecGeoms.resize(e);
 				
@@ -406,7 +403,7 @@ int main()
 						))
 					{
 						std:: cout << Processor.GetLastError() << std::endl;
-						return false;
+						break;
 					}
 
 					p.Verts.resize(VertCount);
@@ -415,11 +412,6 @@ int main()
 					p.Inds.resize(IndCount);
 					memcpy_s(p.Inds.data(), IndCount << 2u, Inds, IndCount << 2u);
 				}
-
-				return true;
-			}))
-			{
-				break;
 			}
 		}
 		while (false);

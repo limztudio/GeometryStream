@@ -7,6 +7,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+#define ENCODE_OFFSET (1u << 20u)
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 namespace __hidden_GeometryIOProcessor
 {
 	class CustomIO;
@@ -216,7 +222,9 @@ public:
 		const double* Verts,
 		const unsigned long* Inds,
 		unsigned long long* EncodedSize,
-		unsigned char** EncodedData
+		unsigned char** EncodedData,
+
+		unsigned long OptionalEncodeOffset = ENCODE_OFFSET
 		);
 
 	
@@ -235,7 +243,7 @@ private:
 	__hidden_GeometryIOProcessor::TempBuffer<unsigned char> TempSrcForEncoding;
 	__hidden_GeometryIOProcessor::TempBuffer<unsigned char> TempDestForEncoding;
 
-private:
+protected:
 	__hidden_GeometryIOProcessor::TempBuffer<char> ErrorMsg;
 };
 
@@ -286,7 +294,7 @@ private:
 	__hidden_GeometryIOProcessor::TempBuffer<unsigned char> TempSrcForDecoding;
 	__hidden_GeometryIOProcessor::TempBuffer<unsigned char> TempDestForDecoding;
 
-private:
+protected:
 	__hidden_GeometryIOProcessor::TempBuffer<char> ErrorMsg;
 };
 
@@ -302,7 +310,7 @@ public:
 		, __hidden_GeometryIOProcessor::CustomFileWriter(Tell, Jump, Write)
 		, HeaderNames(this)
 		, HeaderMinMaxes(this)
-		, TempVerts(this)
+		, Temporal(this)
 		, Handle(nullptr)
 		, FileBegin(0u)
 		, GeometryCount(0u)
@@ -313,33 +321,6 @@ public:
 	const char* GetLastError() const
 	{
 		return GeometryWriter::GetLastError();
-	}
-
-
-public:
-	template<typename FUNC>
-	bool ScopedWrite(void* _Handle, FUNC&& Func)
-	{
-		if (!BeginWrite(_Handle))
-		{
-			return false;
-		}
-
-		do
-		{
-			if (!Func())
-			{
-				break;
-			}
-		}
-		while (false);
-
-		if (!EndWrite())
-		{
-			return false;
-		}
-
-		return true;
 	}
 	
 public:
@@ -357,14 +338,17 @@ public:
 		unsigned long VertCount,
 		unsigned long IndCount,
 		const double* Verts,
-		const unsigned long* Inds
+		const unsigned long* Inds,
+
+		unsigned long OptionalEncodeOffset = ENCODE_OFFSET
 		);
 
 
 private:
 	__hidden_GeometryIOProcessor::TempBuffer<wchar_t> HeaderNames;
 	__hidden_GeometryIOProcessor::TempBuffer<__hidden_GeometryIOProcessor::MinMax> HeaderMinMaxes;
-	__hidden_GeometryIOProcessor::TempBuffer<double> TempVerts;
+	
+	__hidden_GeometryIOProcessor::TempBuffer<unsigned char> Temporal;
 	
 private:
 	void* Handle;
@@ -382,7 +366,7 @@ public:
 		, HeaderRawNames(this)
 		, HeaderNames(this)
 		, HeaderMinMaxes(this)
-		, TempBuffer(this)
+		, Temporal(this)
 		, Handle(nullptr)
 		, FileBegin(0u)
 	{}
@@ -392,33 +376,6 @@ public:
 	const char* GetLastError() const
 	{
 		return GeometryReader::GetLastError();
-	}
-
-
-public:
-	template<typename FUNC>
-	bool ScopedRead(void* _Handle, FUNC&& Func)
-	{
-		if (!BeginRead(_Handle))
-		{
-			return false;
-		}
-
-		do
-		{
-			if (!Func())
-			{
-				break;
-			}
-		}
-		while (false);
-
-		if (!EndRead())
-		{
-			return false;
-		}
-
-		return true;
 	}
 	
 public:
@@ -466,12 +423,65 @@ private:
 	__hidden_GeometryIOProcessor::TempBuffer<wchar_t> HeaderRawNames;
 	__hidden_GeometryIOProcessor::TempBuffer<const wchar_t*> HeaderNames;
 	__hidden_GeometryIOProcessor::TempBuffer<__hidden_GeometryIOProcessor::MinMax> HeaderMinMaxes;
-	__hidden_GeometryIOProcessor::TempBuffer<unsigned char> TempBuffer;
+	
+	__hidden_GeometryIOProcessor::TempBuffer<unsigned char> Temporal;
 	
 private:
 	void* Handle;
 	unsigned long long FileBegin;
 };
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+template<typename T>
+class GeometryStreamScopedIO
+{};
+
+template<>
+class GeometryStreamScopedIO<GeometryStreamWriter>
+{
+public:
+	GeometryStreamScopedIO(GeometryStreamWriter& _Obj, void* Handle)
+		: Obj(_Obj)
+	{
+		Obj.BeginWrite(Handle);
+	}
+	~GeometryStreamScopedIO()
+	{
+		Obj.EndWrite();
+	}
+
+
+private:
+	GeometryStreamWriter& Obj;
+};
+
+template<>
+class GeometryStreamScopedIO<GeometryStreamReader>
+{
+public:
+	GeometryStreamScopedIO(GeometryStreamReader& _Obj, void* Handle)
+		: Obj(_Obj)
+	{
+		Obj.BeginRead(Handle);
+	}
+	~GeometryStreamScopedIO()
+	{
+		Obj.EndRead();
+	}
+
+
+private:
+	GeometryStreamReader& Obj;
+};
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+#undef ENCODE_OFFSET
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

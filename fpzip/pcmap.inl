@@ -100,7 +100,7 @@ PCmap<double, width, void>::forward(double d) const
   Range r = fcast(d);
   r = ~r;
   r >>= shift;
-  r ^= static_cast<uint>(-static_cast<int>(r >> (bits - 1))) >> (shift + 1);
+  r ^= static_cast<uint>(-static_cast<int>(r >> (bits - 1))) >> ((shift + 1) & 7);
   return r;
 }
 
@@ -108,7 +108,7 @@ template <uint width>
 double
 PCmap<double, width, void>::inverse(uint64 r) const
 {
-  r ^= static_cast<uint>(-static_cast<int>(r >> (bits - 1))) >> (shift + 1);
+  r ^= static_cast<uint>(-static_cast<int>(r >> (bits - 1))) >> ((shift + 1) & 7);
   r = ~r;
   r <<= shift;
   return icast(r);

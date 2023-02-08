@@ -8,8 +8,6 @@
 
 #define USE_LZMA2
 
-#define ENCODE_OFFSET (1024 * 1024)
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -333,7 +331,9 @@ bool GeometryWriter::Encode(
 	const double* Verts,
 	const unsigned long* Inds,
 	unsigned long long* EncodedSize,
-	unsigned char** EncodedData
+	unsigned char** EncodedData,
+
+	unsigned long OptionalEncodeOffset
 	)
 {
 	{
@@ -429,7 +429,7 @@ bool GeometryWriter::Encode(
 		}
 
 		{
-			if ((srcLen + ENCODE_OFFSET) <= destLen)
+			if ((srcLen + OptionalEncodeOffset) <= destLen)
 			{
 				const unsigned long long BufferSize = srcLen | 0x8000000000000000;
 			
@@ -1011,43 +1011,136 @@ bool GeometryStreamReader::BeginRead(void* _Handle)
 		return false;
 	}
 
+	const bool bEncodedHeader = ((HeaderPos & 0x8000000000000000) != 0u);
+	HeaderPos &= 0x7FFFFFFFFFFFFFFF;
 	if (!CustomJump(Handle, HeaderPos))
 	{
 		return false;
 	}
 
 	{
-		unsigned long long GeometryCount = static_cast<unsigned long long>(-1);
-		if (!CustomRead(Handle, sizeof(GeometryCount), &GeometryCount))
+		if (bEncodedHeader)
 		{
-			return false;
-		}
-
-		if (GeometryCount == static_cast<unsigned long long>(-1))
-		{
-			return false;
-		}
-
-		HeaderNames.Resize(GeometryCount);
-		HeaderMinMaxes.Resize(GeometryCount);
-
-		HeaderRawNames.Resize(GeometryCount << 1u);
-		HeaderRawNames.Resize(0u);
-		for (unsigned long long i = 0u; i < GeometryCount; ++i)
-		{
-			wchar_t Chr = 0;
-			do
+			__hidden_GeometryIOProcessor::ISzAllocForGeometry allocator;
 			{
-				if (!CustomRead(Handle, sizeof(Chr), &Chr))
-				{
-					return false;
-				}
-
-				HeaderRawNames.Resize(HeaderRawNames.Size() + 1u);
-				HeaderRawNames[HeaderRawNames.Size() - 1u] = Chr;
+				allocator.Alloc = __hidden_GeometryIOProcessor::LZMAAlloc;
+				allocator.Free = __hidden_GeometryIOProcessor::LZMAFree;
+				allocator._this = this;
 			}
-			while (Chr != 0);
+
+#ifdef USE_LZMA2
+			static const unsigned long PropSize = 1u;
+#else
+			static const unsigned long PropSize = LZMA_PROPS_SIZE;
+#endif
+			
+			struct
+			{
+				unsigned long DestSize;
+				unsigned long SrcSize;
+				unsigned char Prop[PropSize];
+			}
+			PreHeader;
+			if (!CustomRead(Handle, 8u + PropSize, &PreHeader))
+			{
+				return false;
+			}
+
+			Temporal.Resize(PreHeader.SrcSize + PreHeader.DestSize);
+			if (!CustomRead(Handle, PreHeader.SrcSize, Temporal.Get()))
+			{
+				return false;
+			}
+
+			SizeT SrcLen = PreHeader.SrcSize;
+			SizeT DestLen = PreHeader.DestSize;
+			
+			unsigned char* PtrSrc = Temporal.Get();
+			unsigned char* PtrDest = Temporal.Get() + PreHeader.SrcSize;
+
+#ifdef USE_LZMA2
+			ELzmaStatus status;
+			SRes res = __hidden_GeometryIOProcessor::LZMA2Decode(PtrDest, &DestLen, PtrSrc, &SrcLen, PreHeader.Prop[0], LZMA_FINISH_ANY, &status, &allocator);
+#else
+			ELzmaStatus status;
+			SRes res = LzmaDecode(PtrDest, &DestLen, PtrSrc, &SrcLen, PreHeader.Prop, PropSize, LZMA_FINISH_ANY, &status, &allocator);
+#endif
+			if (res != SZ_OK)
+			{
+				__hidden_GeometryIOProcessor::LZMAGetErrorMsg(res, &ErrorMsg);
+				return false;
+			}
+
+			unsigned long long GeometryCount;
+			memcpy_s(&GeometryCount, sizeof(GeometryCount), PtrDest, sizeof(GeometryCount));
+			PtrDest += sizeof(GeometryCount);
+
+			if (GeometryCount == static_cast<unsigned long long>(-1))
+			{
+				return false;
+			}
+
+			HeaderNames.Resize(GeometryCount);
+			HeaderMinMaxes.Resize(GeometryCount);
+
+			HeaderRawNames.Resize(GeometryCount << 1u);
+			HeaderRawNames.Resize(0u);
+			for (unsigned long long i = 0u; i < GeometryCount; ++i)
+			{
+				wchar_t Chr = 0;
+				do
+				{
+					memcpy_s(&Chr, sizeof(Chr), PtrDest, sizeof(Chr));
+					PtrDest += sizeof(Chr);
+
+					HeaderRawNames.Resize(HeaderRawNames.Size() + 1u);
+					HeaderRawNames[HeaderRawNames.Size() - 1u] = Chr;
+				}
+				while (Chr != 0);
+			}
+
+			memcpy_s(HeaderMinMaxes.Get(), GeometryCount * sizeof(__hidden_GeometryIOProcessor::MinMax), PtrDest, GeometryCount * sizeof(__hidden_GeometryIOProcessor::MinMax));
 		}
+		else
+		{
+			unsigned long long GeometryCount = static_cast<unsigned long long>(-1);
+			if (!CustomRead(Handle, sizeof(GeometryCount), &GeometryCount))
+			{
+				return false;
+			}
+
+			if (GeometryCount == static_cast<unsigned long long>(-1))
+			{
+				return false;
+			}
+
+			HeaderNames.Resize(GeometryCount);
+			HeaderMinMaxes.Resize(GeometryCount);
+
+			HeaderRawNames.Resize(GeometryCount << 1u);
+			HeaderRawNames.Resize(0u);
+			for (unsigned long long i = 0u; i < GeometryCount; ++i)
+			{
+				wchar_t Chr = 0;
+				do
+				{
+					if (!CustomRead(Handle, sizeof(Chr), &Chr))
+					{
+						return false;
+					}
+
+					HeaderRawNames.Resize(HeaderRawNames.Size() + 1u);
+					HeaderRawNames[HeaderRawNames.Size() - 1u] = Chr;
+				}
+				while (Chr != 0);
+			}
+
+			if (!CustomRead(Handle, GeometryCount * sizeof(__hidden_GeometryIOProcessor::MinMax), HeaderMinMaxes.Get()))
+			{
+				return false;
+			}			
+		}
+
 		{
 			static const wchar_t Dummy = 0;
 			
@@ -1060,11 +1153,6 @@ bool GeometryStreamReader::BeginRead(void* _Handle)
 					++Names;
 				}
 			}
-		}
-
-		if (!CustomRead(Handle, GeometryCount * sizeof(__hidden_GeometryIOProcessor::MinMax), HeaderMinMaxes.Get()))
-		{
-			return false;
 		}
 	}
 
@@ -1094,18 +1182,89 @@ bool GeometryStreamWriter::EndWrite()
 	}
 
 	{
-		if (!CustomWrite(Handle, sizeof(GeometryCount), &GeometryCount))
+		__hidden_GeometryIOProcessor::ISzAllocForGeometry allocator;
 		{
+			allocator.Alloc = __hidden_GeometryIOProcessor::LZMAAlloc;
+			allocator.Free = __hidden_GeometryIOProcessor::LZMAFree;
+			allocator._this = this;
+		}
+
+#ifdef USE_LZMA2
+		static const unsigned long PropSize = 1u;
+#else
+		static const unsigned long PropSize = LZMA_PROPS_SIZE;
+#endif
+
+		SizeT SrcSize = sizeof(GeometryCount) + (HeaderNames.Size() * sizeof(wchar_t)) + (HeaderMinMaxes.Size() * sizeof(__hidden_GeometryIOProcessor::MinMax));
+		SizeT DestSize = SrcSize + (SrcSize / 3 + 128u);
+		Temporal.Resize(SrcSize + 8u + PropSize + DestSize);
+		{
+			unsigned char* Ptr = Temporal.Get();
+			
+			memcpy_s(Ptr, sizeof(GeometryCount), &GeometryCount, sizeof(GeometryCount));
+			Ptr += sizeof(GeometryCount);
+			memcpy_s(Ptr, HeaderNames.Size() * sizeof(wchar_t), HeaderNames.Get(), HeaderNames.Size() * sizeof(wchar_t));
+			Ptr += (HeaderNames.Size() * sizeof(wchar_t));
+			memcpy_s(Ptr, HeaderMinMaxes.Size() * sizeof(__hidden_GeometryIOProcessor::MinMax), HeaderMinMaxes.Get(), HeaderMinMaxes.Size() * sizeof(__hidden_GeometryIOProcessor::MinMax));
+		}
+
+#ifdef USE_LZMA2
+		CLzma2EncProps props;
+		Lzma2EncProps_Init(&props);
+		props.lzmaProps.level = 5;
+		props.lzmaProps.lc = 3;
+		props.lzmaProps.lp = 0;
+		props.lzmaProps.pb = 2;
+		props.lzmaProps.fb = 32;
+		props.lzmaProps.numThreads = 8;
+		
+		SRes res = __hidden_GeometryIOProcessor::LZMA2Encode(Temporal.Get() + SrcSize + 8u + PropSize, &DestSize, Temporal.Get() + SrcSize + 8u, Temporal.Get(), SrcSize, &props, nullptr, &allocator, &allocator);
+#else
+		CLzmaEncProps props;
+		LzmaEncProps_Init(&props);
+		props.level = 5;
+		props.lc = 3;
+		props.lp = 0;
+		props.pb = 2;
+		props.fb = 32;
+		props.numThreads = 2;
+
+		SizeT propsSize = PropSize;
+		
+		SRes res = LzmaEncode(Temporal.Get() + SrcSize + 8u + PropSize, &DestSize, Temporal.Get(), SrcSize, &props, Temporal.Get() + SrcSize + 8u, &propsSize, 0, nullptr, &allocator, &allocator);
+#endif
+		if (res != SZ_OK)
+		{
+			__hidden_GeometryIOProcessor::LZMAGetErrorMsg(res, &ErrorMsg);
 			return false;
 		}
 
-		if (!CustomWrite(Handle, HeaderNames.Size() * sizeof(wchar_t), HeaderNames.Get()))
+		if (SrcSize > (8u + PropSize + DestSize))
 		{
-			return false;
+			HeaderPos |= 0x8000000000000000;
+
+			unsigned char* Ptr = Temporal.Get() + SrcSize;
+			{
+				unsigned long WriteSize = static_cast<unsigned long>(SrcSize);
+				memcpy_s(Ptr, 4u, &WriteSize, 4u);
+				
+				WriteSize = static_cast<unsigned long>(DestSize);
+				memcpy_s(Ptr + 4u, 4u, &WriteSize, 4u);
+			}
+
+			if (!CustomWrite(Handle, 8u + PropSize + DestSize, Ptr))
+			{
+				return false;
+			}
 		}
-		if (!CustomWrite(Handle, HeaderMinMaxes.Size() * sizeof(__hidden_GeometryIOProcessor::MinMax), HeaderMinMaxes.Get()))
+		else
 		{
-			return false;
+			HeaderPos &= 0x7FFFFFFFFFFFFFFF;
+			
+			if (!CustomWrite(Handle, SrcSize, Temporal.Get()))
+			{
+				return false;
+			}
 		}
 	}
 
@@ -1154,12 +1313,14 @@ unsigned long long GeometryStreamWriter::EmplaceGeometry(
 	unsigned long VertCount,
 	unsigned long IndCount,
 	const double* Verts,
-	const unsigned long* Inds
+	const unsigned long* Inds,
+
+	unsigned long OptionalEncodeOffset
 	)
 {
 	unsigned long long EncodedSize;
 	unsigned char* EncodedData;
-	if (!Encode(Scale, Rotation, Position, VertCount, IndCount, Verts, Inds, &EncodedSize, &EncodedData))
+	if (!Encode(Scale, Rotation, Position, VertCount, IndCount, Verts, Inds, &EncodedSize, &EncodedData, OptionalEncodeOffset))
 	{
 		return static_cast<unsigned long long>(-1);
 	}
@@ -1178,13 +1339,13 @@ unsigned long long GeometryStreamWriter::EmplaceGeometry(
 	
 	__hidden_GeometryIOProcessor::MinMax GeometryMinMax;
 	{
-		TempVerts.Resize(VertCount);
+		Temporal.Resize(VertCount << 3u);
 
 		double GeometryMin[] = { DBL_MAX, DBL_MAX, DBL_MAX };
 		double GeometryMax[] = { -DBL_MAX, -DBL_MAX, -DBL_MAX };
 		{
 			const double* Src = Verts;
-			double* Dest = TempVerts.Get();
+			double* Dest = reinterpret_cast<double*>(Temporal.Get());
 			for (const double* SrcEnd = Src + VertCount; Src != SrcEnd; Src += 3u, Dest += 3u)
 			{
 				{
@@ -1225,7 +1386,7 @@ unsigned long long GeometryStreamWriter::EmplaceGeometry(
 			{
 				double X, Y, Z;
 				{
-					const double* Ptr = &TempVerts[(*Src) * 3u];
+					const double* Ptr = &(reinterpret_cast<const double*>(Temporal.Get())[(*Src) * 3u]);
 
 					X = *Ptr;
 					Y = *(Ptr + 1u);
@@ -1300,14 +1461,14 @@ bool GeometryStreamReader::GetGeometry(
 			return false;
 		}
 
-		TempBuffer.Resize(EncodedSize);
-		if (!CustomRead(Handle, EncodedSize, TempBuffer.Get()))
+		Temporal.Resize(EncodedSize);
+		if (!CustomRead(Handle, EncodedSize, Temporal.Get()))
 		{
 			return false;
 		}
 	}
 
-	if (!Decode(TempBuffer.Size(), TempBuffer.Get(), Scale, Rotation, Position, VertCount, IndCount, Verts, Inds))
+	if (!Decode(Temporal.Size(), Temporal.Get(), Scale, Rotation, Position, VertCount, IndCount, Verts, Inds))
 	{
 		return false;
 	}
@@ -1358,8 +1519,6 @@ bool GeometryStreamReader::GetGeometry(
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-#undef ENCODE_OFFSET
 
 #ifdef USE_LZMA2
 #undef USE_LZMA2
