@@ -2,7 +2,7 @@ template <typename U>
 uint bsr(U x)
 {
   uint k;
-#if __i386__ && USEASM
+#if (defined(__i386__) && defined(USEASM)) && (__i386__ && USEASM)
   __asm__("bsr %1, %0" : "=r"(k) : "r"(x));
 #else
   k = 0;

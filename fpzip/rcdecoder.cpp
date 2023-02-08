@@ -1,5 +1,5 @@
-#include <cstddef>
 #include "rcdecoder.h"
+#include <cstddef>
 
 // initialize decoder
 void RCdecoder::init()

@@ -1,11 +1,10 @@
+#include "write.h"
 #include <cstdio>
 #include <cstdlib>
 #include "pcencoder.h"
 #include "rcqsmodel.h"
 #include "front.h"
-#include "fpzip.h"
 #include "codec.h"
-#include "write.h"
 
 // array meta data and encoder
 struct FPZoutput : public FPZ {

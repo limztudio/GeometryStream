@@ -1,12 +1,13 @@
 #ifndef FPZIP_WRITE_H
 #define FPZIP_WRITE_H
 
-#include "types.h"
+#include "rcencoder.h"
+#include "fpzip.h"
 
 #define subsize(T, n) (CHAR_BIT * sizeof(T) * (n) / 32)
 
 // file writer for compressed data
-#if FPZIP_BLOCK_SIZE > 1
+#if defined(FPZIP_BLOCK_SIZE) && (FPZIP_BLOCK_SIZE > 1)
 class RCfileencoder : public RCencoder {
 public:
   RCfileencoder(FILE* file) : RCencoder(), file(file), count(0), size(0) {}

@@ -1,5 +1,5 @@
-#include <cstddef>
 #include "rcencoder.h"
+#include <cstddef>
 
 // finalize encoder
 void RCencoder::finish()

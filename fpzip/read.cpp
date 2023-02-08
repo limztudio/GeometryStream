@@ -1,11 +1,10 @@
+#include "read.h"
 #include <cstdio>
 #include <cstdlib>
 #include "pcdecoder.h"
 #include "rcqsmodel.h"
 #include "front.h"
-#include "fpzip.h"
 #include "codec.h"
-#include "read.h"
 
 // array meta data and decoder
 struct FPZinput : public FPZ {

@@ -60,12 +60,12 @@ typedef unsigned long ulong;
     #define INT64PRId #FPZIP_INT64_SUFFIX "d"
     #define INT64PRIi #FPZIP_INT64_SUFFIX "i"
     typedef FPZIP_INT64 int64;
-  #elif FPZIP_LP64
+  #elif defined(FPZIP_LP64) && FPZIP_LP64
     #define INT64C(x) x ## l
     #define INT64PRId "ld"
     #define INT64PRIi "li"
     typedef signed long int64;
-  #elif FPZIP_LLP64
+  #elif defined(FPZIP_LLP64) && FPZIP_LLP64
     #define INT64C(x) x ## ll
     #define INT64PRId "lld"
     #define INT64PRIi "lli"
@@ -85,13 +85,13 @@ typedef unsigned long ulong;
       #define UINT64PRIx #FPZIP_INT64_SUFFIX "x"
     #endif
     typedef FPZIP_UINT64 uint64;
-  #elif FPZIP_LP64
+  #elif defined(FPZIP_LP64) && FPZIP_LP64
     #define UINT64C(x) x ## ul
     #define UINT64PRIo "lo"
     #define UINT64PRIu "lu"
     #define UINT64PRIx "lx"
     typedef unsigned long uint64;
-  #elif FPZIP_LLP64
+  #elif defined(FPZIP_LLP64) && FPZIP_LLP64
     #define UINT64C(x) x ## ull
     #define UINT64PRIo "llo"
     #define UINT64PRIu "llu"

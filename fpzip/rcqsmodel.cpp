@@ -1,5 +1,5 @@
-#include <stdexcept>
 #include "rcqsmodel.h"
+#include <stdexcept>
 
 // table size for binary search
 #define TBLSHIFT 7
