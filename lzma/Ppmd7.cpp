@@ -7,6 +7,7 @@ This code is based on PPMd var.H (2001): Dmitry Shkarin : Public domain */
 #include <cstring>
 
 
+extern bool __common_memset(void*, int, size_t);
 extern bool __common_memcpy(void*, const void*, size_t);
 
 
@@ -66,8 +67,8 @@ void Ppmd7_Construct(CPpmd7 *p)
 
   p->NS2BSIndx[0] = (0 << 1);
   p->NS2BSIndx[1] = (1 << 1);
-  memset(p->NS2BSIndx + 2, (2 << 1), 9);
-  memset(p->NS2BSIndx + 11, (3 << 1), 256 - 11);
+  __common_memset(p->NS2BSIndx + 2, (2 << 1), 9);
+  __common_memset(p->NS2BSIndx + 11, (3 << 1), 256 - 11);
 
   for (i = 0; i < 3; i++)
     p->NS2Indx[i] = (Byte)i;
@@ -342,7 +343,7 @@ void RestartModel(CPpmd7 *p)
 {
   unsigned i, k;
 
-  memset(p->FreeList, 0, sizeof(p->FreeList));
+  __common_memset(p->FreeList, 0, sizeof(p->FreeList));
   
   p->Text = p->Base + p->AlignOffset;
   p->HiUnit = p->Text + p->Size;

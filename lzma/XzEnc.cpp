@@ -12,6 +12,7 @@
 #include "Bra.h"
 
 
+extern bool __common_memset(void*, int, size_t);
 extern bool __common_memcpy(void*, const void*, size_t);
 
 
@@ -3180,7 +3181,7 @@ static SRes XzDecMt_Callback_Write(void *pp, unsigned coderIndex,
     {
       if (me->props.ignoreErrors)
       {
-        memset(data + size, 0, coder->outPreSize - size);
+        __common_memset(data + size, 0, coder->outPreSize - size);
         size = coder->outPreSize;
       }
       // me->numBadBlocks++;

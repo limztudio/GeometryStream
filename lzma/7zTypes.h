@@ -489,8 +489,6 @@ struct ISzAlloc
 */
 
 
-#define MY_memset_0_ARRAY(a) memset((a), 0, sizeof(a))
-
 #ifdef _WIN32
 
 #define CHAR_PATH_SEPARATOR '\\'

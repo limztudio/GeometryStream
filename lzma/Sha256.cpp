@@ -10,6 +10,7 @@ This code is based on public domain code from Wei Dai's Crypto++ library. */
 #include "RotateDefs.h"
 
 
+extern bool __common_memset(void*, int, size_t);
 extern bool __common_memcpy(void*, const void*, size_t);
 
 
@@ -361,7 +362,7 @@ void MY_FAST_CALL Sha256_UpdateBlocks(UInt32 state[8], const Byte *data, size_t 
   }
 
   /* Wipe variables */
-  /* memset(W, 0, sizeof(W)); */
+  /* __common_memset(W, 0, sizeof(W)); */
 }
 
 #undef S0
@@ -420,7 +421,7 @@ void Sha256_Final(CSha256 *p, Byte *digest)
   if (pos > (64 - 8))
   {
     while (pos != 64) { p->buffer[pos++] = 0; }
-    // memset(&p->buf.buffer[pos], 0, 64 - pos);
+    // __common_memset(&p->buf.buffer[pos], 0, 64 - pos);
     Sha256_UpdateBlock(p);
     pos = 0;
   }
@@ -440,7 +441,7 @@ void Sha256_Final(CSha256 *p, Byte *digest)
   }
   */
 
-  memset(&p->buffer[pos], 0, (64 - 8) - pos);
+  __common_memset(&p->buffer[pos], 0, (64 - 8) - pos);
 
   {
     UInt64 numBits = (p->count << 3);
