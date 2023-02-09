@@ -105,8 +105,8 @@ typedef unsigned long ulong;
   #define UINT64SCNx UINT64PRIx
 #endif
 
-extern void* _fpzip_alloc(size_t);
-extern void _fpzip_free(void*);
+extern void* __fpzip_alloc(size_t);
+extern void __fpzip_free(void*);
 
 #include <utility>
 #include <new>
@@ -114,7 +114,7 @@ extern void _fpzip_free(void*);
 template<typename T, typename... ARGS>
 T* _fpzip_new(ARGS&&... args)
 {
-  T* p = static_cast<T*>(_fpzip_alloc(sizeof(T)));
+  T* p = static_cast<T*>(__fpzip_alloc(sizeof(T)));
   new (p) T(std::forward<ARGS>(args)...);
   return p;
 }
@@ -122,7 +122,7 @@ template<typename T>
 void _fpzip_delete(T* p)
 {
   p->~T();
-  _fpzip_free(p);
+  __fpzip_free(p);
 }
 
 #endif

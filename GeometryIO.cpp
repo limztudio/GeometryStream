@@ -326,11 +326,11 @@ bool __common_memcpy(void* _restrict Dest, const void* _restrict Src, size_t Len
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void* _fpzip_alloc(size_t size)
+void* __fpzip_alloc(size_t size)
 {
 	return __hidden_GeometryIOProcessor::FPZIPGeometryIOProcessorAlloc(size);
 }
-void _fpzip_free(void* p)
+void __fpzip_free(void* p)
 {
 	return __hidden_GeometryIOProcessor::FPZIPGeometryIOProcessorFree(p);
 }

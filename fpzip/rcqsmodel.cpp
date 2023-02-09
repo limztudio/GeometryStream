@@ -12,15 +12,15 @@
 RCqsmodel::RCqsmodel(bool compress, uint symbols) : RCmodel(symbols), bits(bits_RCqsmodel), targetrescale(period_RCqsmodel)
 {
   uint n = symbols;
-  symf = reinterpret_cast<uint*>(_fpzip_alloc((n + 1) * sizeof(uint)));
-  cumf = reinterpret_cast<uint*>(_fpzip_alloc((n + 1) * sizeof(uint)));
+  symf = reinterpret_cast<uint*>(__fpzip_alloc((n + 1) * sizeof(uint)));
+  cumf = reinterpret_cast<uint*>(__fpzip_alloc((n + 1) * sizeof(uint)));
   cumf[0] = 0;
   cumf[n] = 1u << bits;
   if (compress)
     search = 0;
   else {
     searchshift = bits - TBLSHIFT;
-    search = reinterpret_cast<uint*>(_fpzip_alloc(((1 << TBLSHIFT) + 1) * sizeof(uint)));
+    search = reinterpret_cast<uint*>(__fpzip_alloc(((1 << TBLSHIFT) + 1) * sizeof(uint)));
   }
   reset();
 }
@@ -30,9 +30,9 @@ RCqsmodel::RCqsmodel(bool compress, uint symbols) : RCmodel(symbols), bits(bits_
 
 RCqsmodel::~RCqsmodel()
 {
-  _fpzip_free(symf);
-  _fpzip_free(cumf);
-  _fpzip_free(search);
+  __fpzip_free(symf);
+  __fpzip_free(cumf);
+  __fpzip_free(search);
 }
 
 // reinitialize model

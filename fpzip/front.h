@@ -9,8 +9,8 @@ class Front {
 public:
   Front(uint nx, uint ny, T zero = 0)
     : zero(zero), dx(1), dy(nx + 1), dz(dy * (ny + 1)), m(mask(dx + dy + dz)),
-      i(0), a(reinterpret_cast<T*>(_fpzip_alloc((m + 1) * sizeof(T)))) {}
-  ~Front() { _fpzip_free(a); }
+      i(0), a(reinterpret_cast<T*>(__fpzip_alloc((m + 1) * sizeof(T)))) {}
+  ~Front() { __fpzip_free(a); }
 
   // fetch neighbor relative to current sample
   const T& operator()(uint x, uint y, uint z) const
