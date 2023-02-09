@@ -829,7 +829,7 @@ static WRes ThreadFunc2(CMtDecThread *t)
 #ifdef _WIN32
 #include <malloc.h>
 #else
-#include <stdlib.h>
+#include <cstdlib>
 #endif
 #endif
 

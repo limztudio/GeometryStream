@@ -7,9 +7,6 @@
 
 #include <cstdio>
 
-#ifdef _WIN32
-#include <Windows.h>
-#endif
 #include <cstdlib>
 
 /* #define _SZ_ALLOC_DEBUG */
@@ -150,97 +147,6 @@ void MyFree(void *address)
   free(address);
 }
 
-#ifdef _WIN32
-
-void *MidAlloc(size_t size)
-{
-  if (size == 0)
-    return NULL;
-  
-  PRINT_ALLOC("Alloc-Mid", g_allocCountMid, size, NULL);
-  
-  return VirtualAlloc(NULL, size, MEM_COMMIT, PAGE_READWRITE);
-}
-
-void MidFree(void *address)
-{
-  PRINT_FREE("Free-Mid", g_allocCountMid, address);
-
-  if (!address)
-    return;
-  VirtualFree(address, 0, MEM_RELEASE);
-}
-
-#ifdef _7ZIP_LARGE_PAGES
-
-#ifdef MEM_LARGE_PAGES
-  #define MY__MEM_LARGE_PAGES  MEM_LARGE_PAGES
-#else
-  #define MY__MEM_LARGE_PAGES  0x20000000
-#endif
-
-extern
-SIZE_T g_LargePageSize;
-SIZE_T g_LargePageSize = 0;
-typedef SIZE_T (WINAPI *GetLargePageMinimumP)(VOID);
-
-#endif // _7ZIP_LARGE_PAGES
-
-void SetLargePageSize()
-{
-  #ifdef _7ZIP_LARGE_PAGES
-  SIZE_T size;
-  GetLargePageMinimumP largePageMinimum = (GetLargePageMinimumP)
-        GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")), "GetLargePageMinimum");
-  if (!largePageMinimum)
-    return;
-  size = largePageMinimum();
-  if (size == 0 || (size & (size - 1)) != 0)
-    return;
-  g_LargePageSize = size;
-  #endif
-}
-
-
-void *BigAlloc(size_t size)
-{
-  if (size == 0)
-    return NULL;
-
-  PRINT_ALLOC("Alloc-Big", g_allocCountBig, size, NULL);
-  
-  #ifdef _7ZIP_LARGE_PAGES
-  {
-    SIZE_T ps = g_LargePageSize;
-    if (ps != 0 && ps <= (1 << 30) && size > (ps / 2))
-    {
-      size_t size2;
-      ps--;
-      size2 = (size + ps) & ~ps;
-      if (size2 >= size)
-      {
-        void *res = VirtualAlloc(NULL, size2, MEM_COMMIT | MY__MEM_LARGE_PAGES, PAGE_READWRITE);
-        if (res)
-          return res;
-      }
-    }
-  }
-  #endif
-
-  return VirtualAlloc(NULL, size, MEM_COMMIT, PAGE_READWRITE);
-}
-
-void BigFree(void *address)
-{
-  PRINT_FREE("Free-Big", g_allocCountBig, address);
-  
-  if (!address)
-    return;
-  VirtualFree(address, 0, MEM_RELEASE);
-}
-
-#endif
-
 
 static void *SzAlloc(ISzAllocPtr p, size_t size) { UNUSED_VAR(p); return MyAlloc(size); }
 static void SzFree(ISzAllocPtr p, void *address) { UNUSED_VAR(p); MyFree(address); }
@@ -261,7 +167,11 @@ const ISzAlloc g_BigAlloc = { SzBigAlloc, SzBigFree };
 */
 
 #ifdef _WIN32
-  typedef UINT_PTR UIntPtr;
+#if defined(_WIN64)
+typedef unsigned __int64 UIntPtr;
+#else
+typedef unsigned int UIntPtr;
+#endif
 #else
   /*
   typedef uintptr_t UIntPtr;

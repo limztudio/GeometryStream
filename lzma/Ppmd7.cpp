@@ -27,7 +27,7 @@ static const UInt16 kInitBinEsc[] = { 0x3CDD, 0x1F3F, 0x59BF, 0x48F3, 0x64A1, 0x
 #define STATS_REF(ptr) ((CPpmd_State_Ref)REF(ptr))
 
 #define CTX(ref) ((CPpmd7_Context *)Ppmd7_GetContext(p, ref))
-#define STATS(ctx) Ppmd7_GetStats(p, ctx)
+#define PPMD7_STATS(ctx) Ppmd7_GetStats(p, ctx)
 #define ONE_STATE(ctx) Ppmd7Context_OneState(ctx)
 #define SUFFIX(ctx) CTX((ctx)->Suffix)
 
@@ -465,7 +465,7 @@ static CTX_PTR CreateSuccessors(CPpmd7 *p)
     if (c->NumStats != 1)
     {
       Byte sym = p->FoundState->Symbol;
-      for (s = STATS(c); s->Symbol != sym; s++);
+      for (s = PPMD7_STATS(c); s->Symbol != sym; s++);
 
     }
     else
@@ -503,7 +503,7 @@ static CTX_PTR CreateSuccessors(CPpmd7 *p)
   {
     UInt32 cf, s0;
     CPpmd_State *s;
-    for (s = STATS(c); s->Symbol != newSym; s++);
+    for (s = PPMD7_STATS(c); s->Symbol != newSym; s++);
     cf = (UInt32)s->Freq - 1;
     s0 = (UInt32)c->Union2.SummFreq - c->NumStats - cf;
     /*
@@ -576,7 +576,7 @@ void Ppmd7_UpdateModel(CPpmd7 *p)
     }
     else
     {
-      CPpmd_State *s = STATS(c);
+      CPpmd_State *s = PPMD7_STATS(c);
       Byte sym = p->FoundState->Symbol;
       
       if (s->Symbol != sym)
@@ -720,7 +720,7 @@ void Ppmd7_UpdateModel(CPpmd7 *p)
             RestartModel(p);
             return;
           }
-          oldPtr = STATS(c);
+          oldPtr = PPMD7_STATS(c);
           MyMem12Cpy(ptr, oldPtr, oldNU);
           InsertNode(p, oldPtr, i);
           c->Union4.Stats = STATS_REF(ptr);
@@ -764,7 +764,7 @@ void Ppmd7_UpdateModel(CPpmd7 *p)
     }
     
     {
-      CPpmd_State *s = STATS(c) + ns1;
+      CPpmd_State *s = PPMD7_STATS(c) + ns1;
       UInt32 cf = 2 * (sum + 6) * (UInt32)p->FoundState->Freq;
       UInt32 sf = (UInt32)s0 + sum;
       s->Symbol = p->FoundState->Symbol;
@@ -797,7 +797,7 @@ MY_NO_INLINE
 static void Rescale(CPpmd7 *p)
 {
   unsigned i, adder, sumFreq, escFreq;
-  CPpmd_State *stats = STATS(p->MinContext);
+  CPpmd_State *stats = PPMD7_STATS(p->MinContext);
   CPpmd_State *s = p->FoundState;
 
   /* Sort the list by Freq */
@@ -911,7 +911,7 @@ static void Rescale(CPpmd7 *p)
     CPpmd7_Context *mc = p->MinContext;
     mc->Union2.SummFreq = (UInt16)(sumFreq + escFreq - (escFreq >> 1));
     // Escape_Freq halving here
-    p->FoundState = STATS(mc);
+    p->FoundState = PPMD7_STATS(mc);
   }
 }
 

@@ -270,7 +270,7 @@ BoolInt CPU_IsSupported_SHA()
   }
 }
 
-// #include <stdio.h>
+// #include <cstdio>
 
 #ifdef _WIN32
 #include <Windows.h>
