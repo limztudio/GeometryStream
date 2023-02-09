@@ -12,18 +12,6 @@
 
 #include <cstddef>
 
-#ifndef EXTERN_C_BEGIN
-#ifdef __cplusplus
-#define EXTERN_C_BEGIN extern "C" {
-#define EXTERN_C_END }
-#else
-#define EXTERN_C_BEGIN
-#define EXTERN_C_END
-#endif
-#endif
-
-EXTERN_C_BEGIN
-
 #define SZ_OK 0
 
 #define SZ_ERROR_DATA 1
@@ -523,7 +511,5 @@ struct ISzAlloc
 #define k_PropVar_TimePrec_Base     16
 #define k_PropVar_TimePrec_100ns (k_PropVar_TimePrec_Base + 7)
 #define k_PropVar_TimePrec_1ns   (k_PropVar_TimePrec_Base + 9)
-
-EXTERN_C_END
 
 #endif

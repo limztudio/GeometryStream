@@ -6,8 +6,6 @@
 
 #include "7zTypes.h"
 
-EXTERN_C_BEGIN
-
 /*
 These functions convert relative addresses to absolute addresses
 in CALL instructions to increase the compression ratio.
@@ -59,6 +57,5 @@ SizeT PPC_Convert(Byte *data, SizeT size, UInt32 ip, int encoding);
 SizeT SPARC_Convert(Byte *data, SizeT size, UInt32 ip, int encoding);
 SizeT IA64_Convert(Byte *data, SizeT size, UInt32 ip, int encoding);
 
-EXTERN_C_END
 
 #endif

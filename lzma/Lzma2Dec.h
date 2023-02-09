@@ -6,8 +6,6 @@
 
 #include "LzmaDec.h"
 
-EXTERN_C_BEGIN
-
 /* ---------- State Interface ---------- */
 
 typedef struct
@@ -114,7 +112,5 @@ Returns:
 
 SRes Lzma2Decode(Byte *dest, SizeT *destLen, const Byte *src, SizeT *srcLen,
     Byte prop, ELzmaFinishMode finishMode, ELzmaStatus *status, ISzAllocPtr alloc);
-
-EXTERN_C_END
 
 #endif

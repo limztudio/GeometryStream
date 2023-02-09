@@ -9,8 +9,6 @@ This code is based on:
 
 #include "Ppmd.h"
 
-EXTERN_C_BEGIN
-
 #define PPMD7_MIN_ORDER 2
 #define PPMD7_MAX_ORDER 64
 
@@ -176,6 +174,4 @@ void Ppmd7z_Flush_RangeEnc(CPpmd7 *p);
 // void Ppmd7z_EncodeSymbol(CPpmd7 *p, int symbol);
 void Ppmd7z_EncodeSymbols(CPpmd7 *p, const Byte *buf, const Byte *lim);
 
-EXTERN_C_END
- 
 #endif

@@ -24,8 +24,6 @@
 
 #include "7zTypes.h"
 
-EXTERN_C_BEGIN
-
 #ifdef _WIN32
 
 WRes HandlePtr_Close(HANDLE *h);
@@ -226,7 +224,5 @@ void CriticalSection_Leave(CCriticalSection *cs);
 LONG InterlockedIncrement(LONG volatile *addend);
 
 #endif  // _WIN32
-
-EXTERN_C_END
 
 #endif

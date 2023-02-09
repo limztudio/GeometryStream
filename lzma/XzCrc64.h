@@ -8,8 +8,6 @@
 
 #include "7zTypes.h"
 
-EXTERN_C_BEGIN
-
 extern UInt64 g_Crc64Table[];
 
 void MY_FAST_CALL Crc64GenerateTable(void);
@@ -20,7 +18,5 @@ void MY_FAST_CALL Crc64GenerateTable(void);
 
 UInt64 MY_FAST_CALL Crc64Update(UInt64 crc, const void *data, size_t size);
 UInt64 MY_FAST_CALL Crc64Calc(const void *data, size_t size);
-
-EXTERN_C_END
 
 #endif

@@ -8,8 +8,6 @@
 
 #include "Xz.h"
 
-EXTERN_C_BEGIN
-
 
 #define XZ_PROPS__BLOCK_SIZE__AUTO   LZMA2_ENC_PROPS__BLOCK_SIZE__AUTO
 #define XZ_PROPS__BLOCK_SIZE__SOLID  LZMA2_ENC_PROPS__BLOCK_SIZE__SOLID
@@ -54,7 +52,5 @@ SRes Xz_Encode(ISeqOutStream *outStream, ISeqInStream *inStream,
     const CXzProps *props, ICompressProgress *progress);
 
 SRes Xz_EncodeEmpty(ISeqOutStream *outStream);
-
-EXTERN_C_END
 
 #endif

@@ -6,8 +6,6 @@
 
 #include "Sha256.h"
 
-EXTERN_C_BEGIN
-
 #define XZ_ID_Subblock 1
 #define XZ_ID_Delta 3
 #define XZ_ID_X86 4
@@ -511,7 +509,5 @@ SRes XzDecMt_Decode(CXzDecMtHandle p,
     int *isMT,                 // out: 0 means that ST (Single-Thread) version was used
                                //      1 means that MT (Multi-Thread) version was used
     ICompressProgress *progress);
-
-EXTERN_C_END
 
 #endif

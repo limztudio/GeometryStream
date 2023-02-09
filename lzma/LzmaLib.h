@@ -6,8 +6,6 @@
 
 #include "7zTypes.h"
 
-EXTERN_C_BEGIN
-
 #define MY_STDAPI int MY_STD_CALL
 
 #define LZMA_PROPS_SIZE 5
@@ -132,7 +130,5 @@ Returns:
 
 MY_STDAPI LzmaUncompress(unsigned char *dest, size_t *destLen, const unsigned char *src, SizeT *srcLen,
   const unsigned char *props, size_t propsSize);
-
-EXTERN_C_END
 
 #endif

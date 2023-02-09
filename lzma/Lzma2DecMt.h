@@ -6,8 +6,6 @@
 
 #include "7zTypes.h"
 
-EXTERN_C_BEGIN
-
 typedef struct
 {
   size_t inBufSize_ST;
@@ -73,7 +71,5 @@ SRes Lzma2DecMt_Read(CLzma2DecMtHandle pp,
     Byte *data, size_t *outSize,
     UInt64 *inStreamProcessed);
 
-
-EXTERN_C_END
 
 #endif

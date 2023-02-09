@@ -10,8 +10,6 @@
 #include "Threads.h"
 #endif
 
-EXTERN_C_BEGIN
-
 #ifndef _7ZIP_ST
 
 #ifndef _7ZIP_ST
@@ -196,7 +194,5 @@ int MtDec_PrepareRead(CMtDec *p);
 const Byte *MtDec_Read(CMtDec *p, size_t *inLim);
 
 #endif
-
-EXTERN_C_END
 
 #endif

@@ -6,8 +6,6 @@
 
 #include "7zTypes.h"
 
-EXTERN_C_BEGIN
-
 void *MyAlloc(size_t size);
 void MyFree(void *address);
 
@@ -39,7 +37,5 @@ typedef struct
 
 void AlignOffsetAlloc_CreateVTable(CAlignOffsetAlloc *p);
 
-
-EXTERN_C_END
 
 #endif

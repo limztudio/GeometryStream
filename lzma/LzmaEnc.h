@@ -6,8 +6,6 @@
 
 #include "7zTypes.h"
 
-EXTERN_C_BEGIN
-
 #define LZMA_PROPS_SIZE 5
 
 typedef struct _CLzmaEncProps
@@ -72,7 +70,5 @@ SRes LzmaEnc_MemEncode(CLzmaEncHandle p, Byte *dest, SizeT *destLen, const Byte 
 SRes LzmaEncode(Byte *dest, SizeT *destLen, const Byte *src, SizeT srcLen,
     const CLzmaEncProps *props, Byte *propsEncoded, SizeT *propsSize, int writeEndMark,
     ICompressProgress *progress, ISzAllocPtr alloc, ISzAllocPtr allocBig);
-
-EXTERN_C_END
 
 #endif

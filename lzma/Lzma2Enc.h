@@ -6,8 +6,6 @@
 
 #include "LzmaEnc.h"
 
-EXTERN_C_BEGIN
-
 #define LZMA2_ENC_PROPS__BLOCK_SIZE__AUTO 0
 #define LZMA2_ENC_PROPS__BLOCK_SIZE__SOLID ((UInt64)(Int64)-1)
 
@@ -49,7 +47,5 @@ SRes Lzma2Enc_Encode2(CLzma2EncHandle p,
     ISeqInStream *inStream,
     const Byte *inData, size_t inDataSize,
     ICompressProgress *progress);
-
-EXTERN_C_END
 
 #endif

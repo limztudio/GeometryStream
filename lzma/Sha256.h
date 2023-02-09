@@ -6,8 +6,6 @@
 
 #include "7zTypes.h"
 
-EXTERN_C_BEGIN
-
 #define SHA256_NUM_BLOCK_WORDS  16
 #define SHA256_NUM_DIGEST_WORDS  8
 
@@ -70,7 +68,5 @@ It prepares all supported implementations, and detects the fastest implementatio
 */
 
 void Sha256Prepare(void);
-
-EXTERN_C_END
 
 #endif

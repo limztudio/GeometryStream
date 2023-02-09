@@ -7,8 +7,6 @@
 #include "LzFind.h"
 #include "Threads.h"
 
-EXTERN_C_BEGIN
-
 typedef struct _CMtSync
 {
   UInt32 numProcessedBlocks;
@@ -103,7 +101,5 @@ void MatchFinderMt_CreateVTable(CMatchFinderMt *p, IMatchFinder2 *vTable);
 /* call MatchFinderMt_InitMt() before IMatchFinder::Init() */
 SRes MatchFinderMt_InitMt(CMatchFinderMt *p);
 void MatchFinderMt_ReleaseStream(CMatchFinderMt *p);
-
-EXTERN_C_END
 
 #endif

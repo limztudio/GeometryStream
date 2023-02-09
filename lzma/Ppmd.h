@@ -7,8 +7,6 @@ This code is based on PPMd var.H (2001): Dmitry Shkarin : Public domain */
 
 #include "CpuArch.h"
 
-EXTERN_C_BEGIN
-
 #if defined(MY_CPU_SIZEOF_POINTER) && (MY_CPU_SIZEOF_POINTER == 4)
 /*
    PPMD code always uses 32-bit internal fields in PPMD structures to store internal references in main block.
@@ -161,7 +159,5 @@ typedef Ppmd_Ref_Type(Byte)        CPpmd_Byte_Ref;
 #define PPMD_SetAllBitsIn256Bytes(p) \
   { size_t z; for (z = 0; z < 256 / sizeof(p[0]); z += 8) { \
   p[z+7] = p[z+6] = p[z+5] = p[z+4] = p[z+3] = p[z+2] = p[z+1] = p[z+0] = ~(size_t)0; }}
-
-EXTERN_C_END
  
 #endif

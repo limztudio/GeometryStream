@@ -6,8 +6,6 @@
 
 #include "7zTypes.h"
 
-EXTERN_C_BEGIN
-
 typedef UInt32 CLzRef;
 
 typedef struct _CMatchFinder
@@ -130,7 +128,5 @@ void Bt3Zip_MatchFinder_Skip(CMatchFinder *p, UInt32 num);
 void Hc3Zip_MatchFinder_Skip(CMatchFinder *p, UInt32 num);
 
 void LzFindPrepare(void);
-
-EXTERN_C_END
 
 #endif

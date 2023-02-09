@@ -6,7 +6,6 @@
 
 #include "7zTypes.h"
 
-EXTERN_C_BEGIN
 
 /*
 MY_CPU_LE means that CPU is LITTLE ENDIAN.
@@ -440,6 +439,5 @@ int My_sysctlbyname_Get(const char *name, void *buf, size_t *bufSize);
 int My_sysctlbyname_Get_UInt32(const char *name, UInt32 *val);
 #endif
 
-EXTERN_C_END
 
 #endif

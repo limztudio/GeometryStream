@@ -6,8 +6,6 @@
 
 #include "MtDec.h"
 
-EXTERN_C_BEGIN
-
 /*
   if (    defined MTCODER__USE_WRITE_THREAD) : main thread writes all data blocks to output stream
   if (not defined MTCODER__USE_WRITE_THREAD) : any coder thread can write data blocks to output stream
@@ -135,7 +133,5 @@ SRes MtCoder_Code(CMtCoder *p);
 
 #endif
 
-
-EXTERN_C_END
 
 #endif
