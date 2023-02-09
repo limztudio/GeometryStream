@@ -8,7 +8,7 @@
 #include "XzCrc64.h"
 
 
-extern bool __common_memcpy(void*, const void*, size_t);
+extern bool __common_memcpy(void* _restrict, const void* _restrict, size_t);
 
 
 const Byte XZ_SIG[XZ_SIG_SIZE] = { 0xFD, '7', 'z', 'X', 'Z', 0 };

@@ -8,7 +8,7 @@ This code is based on PPMd var.H (2001): Dmitry Shkarin : Public domain */
 
 
 extern bool __common_memset(void*, int, size_t);
-extern bool __common_memcpy(void*, const void*, size_t);
+extern bool __common_memcpy(void* _restrict, const void* _restrict, size_t);
 
 
 /* define PPMD7_ORDER_0_SUPPPORT to suport order-0 mode, unsupported by orignal PPMd var.H. code */

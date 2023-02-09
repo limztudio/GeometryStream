@@ -4,7 +4,7 @@
 #include "MtDec.h"
 
 
-extern bool __common_memcpy(void*, const void*, size_t);
+extern bool __common_memcpy(void* _restrict, const void* _restrict, size_t);
 
 
 // #define SHOW_DEBUG_INFO

@@ -9,6 +9,10 @@
 #include "CpuArch.h"
 #include "LzHash.h"
 
+
+extern bool __common_memmove(void*, const void*, size_t);
+
+
 #define kBlockMoveAlign       (1 << 7)    // alignment for memmove()
 #define kBlockSizeAlign       (1 << 16)   // alignment for block allocation
 #define kBlockSizeReserveMin  (1 << 24)   // it's 1/256 from 4 GB dictinary
@@ -178,7 +182,7 @@ void MatchFinder_MoveBlock(CMatchFinder *p)
   const size_t offset = (size_t)(p->buffer - p->bufferBase) - p->keepSizeBefore;
   const size_t keepBefore = (offset & (kBlockMoveAlign - 1)) + p->keepSizeBefore;
   p->buffer = p->bufferBase + keepBefore;
-  memmove(p->bufferBase,
+  __common_memmove(p->bufferBase,
       p->bufferBase + (offset & ~((size_t)kBlockMoveAlign - 1)),
       keepBefore + (size_t)GET_AVAIL_BYTES(p));
 }

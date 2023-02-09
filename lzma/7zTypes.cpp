@@ -6,7 +6,7 @@
 #include <cstring>
 
 
-extern bool __common_memcpy(void*, const void*, size_t);
+extern bool __common_memcpy(void* _restrict, const void* _restrict, size_t);
 
 
 SRes SeqInStream_Read2(const ISeqInStream *stream, void *buf, size_t size, SRes errorType)

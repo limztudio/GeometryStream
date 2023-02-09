@@ -18,13 +18,29 @@ namespace __hidden_GeometryIOProcessor
 {
 	class CustomIO;
 
+
+	static bool Memmove(void* Dest, const void* Src, unsigned long long Len)
+	{
+		return (memmove_s(Dest, Len, Src, Len) == 0);
+	}
+	template<typename T>
+	static bool MemmoveAndMove(T*& Dest, const void* Src, unsigned long long Len)
+	{
+		const bool bRes = Memmove(Dest, Src, Len);
+		
+		unsigned char* Ptr = reinterpret_cast<unsigned char*>(Dest);
+		Ptr += Len;
+		Dest = reinterpret_cast<T*>(Ptr);
+		
+		return bRes;
+	}
 	
-	static bool Memcpy(void* Dest, const void* Src, unsigned long long Len)
+	static bool Memcpy(void* _restrict Dest, const void* _restrict Src, unsigned long long Len)
 	{
 		return (memcpy_s(Dest, Len, Src, Len) == 0);
 	}
 	template<typename T>
-	static bool MemcpyAndMove(T*& Dest, const void* Src, unsigned long long Len)
+	static bool MemcpyAndMove(T*& _restrict Dest, const void* _restrict Src, unsigned long long Len)
 	{
 		const bool bRes = Memcpy(Dest, Src, Len);
 		

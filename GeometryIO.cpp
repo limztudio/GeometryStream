@@ -313,7 +313,11 @@ bool __common_memset(void* Dest, int V, size_t Len)
 {
 	return __hidden_GeometryIOProcessor::Memset(reinterpret_cast<unsigned char*>(Dest), static_cast<unsigned char>(V), Len);
 }
-bool __common_memcpy(void* Dest, const void* Src, size_t Len)
+bool __common_memmove(void* Dest, const void* Src, size_t Len)
+{
+	return __hidden_GeometryIOProcessor::Memmove(Dest, Src, Len);
+}
+bool __common_memcpy(void* _restrict Dest, const void* _restrict Src, size_t Len)
 {
 	return __hidden_GeometryIOProcessor::Memcpy(Dest, Src, Len);
 }
