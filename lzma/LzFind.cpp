@@ -563,7 +563,7 @@ void MatchFinder_Init(CMatchFinder *p)
 // #define _SHOW_HW_STATUS
 
 #ifdef _SHOW_HW_STATUS
-#include <stdio.h>
+#include <cstdio>
 #define _PRF(x) x
 _PRF(;)
 #else

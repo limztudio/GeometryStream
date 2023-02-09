@@ -369,8 +369,8 @@ BoolInt CPU_IsSupported_NEON()   { return IsProcessorFeaturePresent(PF_ARM_NEON_
 #if defined(__APPLE__)
 
 /*
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 static void Print_sysctlbyname(const char *name)
 {
   size_t bufSize = 256;

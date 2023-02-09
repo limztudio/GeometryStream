@@ -158,7 +158,7 @@
 #include <cstdio>
 extern "C" {
 #else
-#include <stdio.h>
+#include <cstdio>
 #endif
 
 /* array meta data and stream handle */

@@ -836,7 +836,7 @@ void MY_FAST_CALL Sha256_UpdateBlocks_HW(UInt32 state[8], const Byte *data, size
 #ifndef USE_HW_SHA
 
 // #error Stop_Compiling_UNSUPPORTED_SHA
-// #include <stdlib.h>
+// #include <cstdlib>
 
 // #include "Sha256.h"
 void MY_FAST_CALL Sha256_UpdateBlocks(UInt32 state[8], const Byte *data, size_t numBlocks);

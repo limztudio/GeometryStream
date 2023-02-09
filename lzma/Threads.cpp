@@ -199,21 +199,21 @@ WRes CriticalSection_Init(CCriticalSection *p)
 
 #include "Threads.h"
 
-#include <errno.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cerrno>
+#include <cstdlib>
+#include <cstring>
 #ifdef _7ZIP_AFFINITY_SUPPORTED
 // #include <sched.h>
 #endif
 
 
-// #include <stdio.h>
+// #include <cstdio>
 // #define PRF(p) p
 #define PRF(p)
 
 #define Print(s) PRF(printf("\n%s\n", s))
 
-// #include <stdio.h>
+// #include <cstdio>
 
 WRes Thread_Create_With_CpuSet(CThread *p, THREAD_FUNC_TYPE func, LPVOID param, const CCpuSet *cpuSet)
 {

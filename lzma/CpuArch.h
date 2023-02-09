@@ -327,7 +327,7 @@ MY_CPU_64BIT means that processor can work with 64-bit registers.
 
 /* Note: we use bswap instruction, that is unsupported in 386 cpu */
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #pragma intrinsic(_byteswap_ushort)
 #pragma intrinsic(_byteswap_ulong)
