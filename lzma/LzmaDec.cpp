@@ -7,6 +7,10 @@
 
 /* #include "CpuArch.h" */
 
+
+extern bool __common_memcpy(void*, const void*, size_t);
+
+
 #define kNumTopBits 24
 #define kTopValue ((UInt32)1 << kNumTopBits)
 
@@ -1225,7 +1229,7 @@ SRes LzmaDec_DecodeToBuf(CLzmaDec *p, Byte *dest, SizeT *destLen, const Byte *sr
     inSize -= inSizeCur;
     *srcLen += inSizeCur;
     outSizeCur = p->dicPos - dicPos;
-    memcpy(dest, p->dic + dicPos, outSizeCur);
+    __common_memcpy(dest, p->dic + dicPos, outSizeCur);
     dest += outSizeCur;
     outSize -= outSizeCur;
     *destLen += outSizeCur;

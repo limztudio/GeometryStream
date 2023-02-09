@@ -1,3 +1,6 @@
+extern bool __common_memcpy(void*, const void*, size_t);
+
+
 template <uint width>
 uint32
 PCmap<float, width, void>::fcast(float d) const
@@ -9,7 +12,7 @@ PCmap<float, width, void>::fcast(float d) const
   return shared.r;
 #else
   Range r;
-  memcpy(&r, &d, sizeof(r));
+  __common_memcpy(&r, &d, sizeof(r));
   return r;
 #endif
 }
@@ -25,7 +28,7 @@ PCmap<float, width, void>::icast(uint32 r) const
   return shared.d;
 #else
   Domain d;
-  memcpy(&d, &r, sizeof(d));
+  __common_memcpy(&d, &r, sizeof(d));
   return d;
 #endif
 }
@@ -72,7 +75,7 @@ PCmap<double, width, void>::fcast(double d) const
   return shared.r;
 #else
   Range r;
-  memcpy(&r, &d, sizeof(r));
+  __common_memcpy(&r, &d, sizeof(r));
   return r;
 #endif
 }
@@ -88,7 +91,7 @@ PCmap<double, width, void>::icast(uint64 r) const
   return shared.d;
 #else
   Domain d;
-  memcpy(&d, &r, sizeof(d));
+  __common_memcpy(&d, &r, sizeof(d));
   return d;
 #endif
 }

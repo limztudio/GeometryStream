@@ -5,6 +5,10 @@
 
 #include "Compiler.h"
 
+
+extern bool __common_memcpy(void*, const void*, size_t);
+
+
 // #define SHOW_DEBUG_INFO
 
 // #define _7ZIP_ST
@@ -598,7 +602,7 @@ static SRes Lzma2DecMt_MtCallback_Write(void *pp, unsigned coderIndex,
   /*
   if (size > me->outBufSize)
     return SZ_ERROR_OUTPUT_EOF;
-  memcpy(me->outBuf, data, size);
+  __common_memcpy(me->outBuf, data, size);
   me->outBufSize -= size;
   me->outBuf += size;
   *needContinue = needContinue2;

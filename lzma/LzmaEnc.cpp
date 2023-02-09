@@ -5,6 +5,10 @@
 
 #include <cstring>
 
+
+extern bool __common_memcpy(void*, const void*, size_t);
+
+
 /* #define SHOW_STAT */
 /* #define SHOW_STAT2 */
 
@@ -492,7 +496,7 @@ typedef struct
 #endif
 */
 
-#define COPY_ARR(dest, src, arr) memcpy(dest->arr, src->arr, sizeof(src->arr));
+#define COPY_ARR(dest, src, arr) __common_memcpy(dest->arr, src->arr, sizeof(src->arr));
 
 void LzmaEnc_SaveState(CLzmaEncHandle pp)
 {
@@ -516,7 +520,7 @@ void LzmaEnc_SaveState(CLzmaEncHandle pp)
   COPY_ARR(dest, p, posSlotEncoder);
   COPY_ARR(dest, p, posEncoders);
 
-  memcpy(dest->litProbs, p->litProbs, ((UInt32)0x300 << p->lclp) * sizeof(CLzmaProb));
+  __common_memcpy(dest->litProbs, p->litProbs, ((UInt32)0x300 << p->lclp) * sizeof(CLzmaProb));
 }
 
 
@@ -542,7 +546,7 @@ void LzmaEnc_RestoreState(CLzmaEncHandle pp)
   COPY_ARR(dest, p, posSlotEncoder);
   COPY_ARR(dest, p, posEncoders);
 
-  memcpy(dest->litProbs, p->litProbs, ((UInt32)0x300 << dest->lclp) * sizeof(CLzmaProb));
+  __common_memcpy(dest->litProbs, p->litProbs, ((UInt32)0x300 << dest->lclp) * sizeof(CLzmaProb));
 }
 
 
@@ -1072,7 +1076,7 @@ MY_NO_INLINE static void MY_FAST_CALL LenPriceEnc_UpdateTables(
         unsigned posState;
         size_t num = (p->tableSize - kLenNumLowSymbols * 2) * sizeof(p->prices[0][0]);
         for (posState = 1; posState < numPosStates; posState++)
-          memcpy(p->prices[posState] + kLenNumLowSymbols * 2, p->prices[0] + kLenNumLowSymbols * 2, num);
+          __common_memcpy(p->prices[posState] + kLenNumLowSymbols * 2, p->prices[0] + kLenNumLowSymbols * 2, num);
       }
     }
   }
@@ -2947,7 +2951,7 @@ static size_t SeqOutStreamBuf_Write(const ISeqOutStream *pp, const void *data, s
   }
   if (size != 0)
   {
-    memcpy(p->data, data, size);
+    __common_memcpy(p->data, data, size);
     p->rem -= size;
     p->data += size;
   }

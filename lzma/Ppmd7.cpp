@@ -6,6 +6,10 @@ This code is based on PPMd var.H (2001): Dmitry Shkarin : Public domain */
 
 #include <cstring>
 
+
+extern bool __common_memcpy(void*, const void*, size_t);
+
+
 /* define PPMD7_ORDER_0_SUPPPORT to suport order-0 mode, unsupported by orignal PPMd var.H. code */
 // #define PPMD7_ORDER_0_SUPPPORT
  
@@ -75,7 +79,7 @@ void Ppmd7_Construct(CPpmd7 *p)
       k = (++m) - 2;
   }
 
-  memcpy(p->ExpEscape, PPMD7_kExpEscape, 16);
+  __common_memcpy(p->ExpEscape, PPMD7_kExpEscape, 16);
 }
 
 

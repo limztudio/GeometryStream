@@ -11,6 +11,10 @@
 #include "CpuArch.h"
 #include "Bra.h"
 
+
+extern bool __common_memcpy(void*, const void*, size_t);
+
+
 // #define _7ZIP_ST
 
 #ifndef _7ZIP_ST
@@ -50,7 +54,7 @@ static SRes Xz_WriteHeader(CXzStreamFlags f, ISeqOutStream *s)
 {
   UInt32 crc;
   Byte header[XZ_STREAM_HEADER_SIZE];
-  memcpy(header, XZ_SIG, XZ_SIG_SIZE);
+  __common_memcpy(header, XZ_SIG, XZ_SIG_SIZE);
   header[XZ_SIG_SIZE] = (Byte)(f >> 8);
   header[XZ_SIG_SIZE + 1] = (Byte)(f & 0xFF);
   crc = CrcCalc(header + XZ_SIG_SIZE, XZ_STREAM_FLAGS_SIZE);
@@ -76,7 +80,7 @@ static SRes XzBlock_WriteHeader(const CXzBlock *p, ISeqOutStream *s)
     const CXzFilter *f = &p->filters[i];
     pos += Xz_WriteVarInt(header + pos, f->id);
     pos += Xz_WriteVarInt(header + pos, f->propsSize);
-    memcpy(header + pos, f->props, f->propsSize);
+    __common_memcpy(header + pos, f->props, f->propsSize);
     pos += f->propsSize;
   }
 
@@ -133,7 +137,7 @@ static SRes XzEncIndex_ReAlloc(CXzEncIndex *p, size_t newSize, ISzAllocPtr alloc
   if (!blocks)
     return SZ_ERROR_MEM;
   if (p->size != 0)
-    memcpy(blocks, p->blocks, p->size);
+    __common_memcpy(blocks, p->blocks, p->size);
   if (p->blocks)
     ISzAlloc_Free(alloc, p->blocks);
   p->blocks = blocks;
@@ -177,7 +181,7 @@ static SRes XzEncIndex_AddIndexRecord(CXzEncIndex *p, UInt64 unpackSize, UInt64 
       return SZ_ERROR_MEM;
     RINOK(XzEncIndex_ReAlloc(p, newSize, alloc));
   }
-  memcpy(p->blocks + p->size, buf, pos);
+  __common_memcpy(p->blocks + p->size, buf, pos);
   p->size += pos;
   p->numBlocks++;
   return SZ_OK;
@@ -264,7 +268,7 @@ static SRes SeqCheckInStream_Read(const ISeqInStream *pp, void *data, size_t *si
       p->realStreamFinished = (size2 == 0) ? 1 : 0;
     }
     else
-      memcpy(data, p->data + (size_t)p->processed, size2);
+      __common_memcpy(data, p->data + (size_t)p->processed, size2);
     XzCheck_Update(&p->check, data, size2);
     p->processed += size2;
   }
@@ -293,7 +297,7 @@ static size_t SeqSizeOutStream_Write(const ISeqOutStream *pp, const void *data, 
   {
     if (size > p->outBufLimit - (size_t)p->processed)
       return 0;
-    memcpy(p->outBuf + (size_t)p->processed, data, size);
+    __common_memcpy(p->outBuf + (size_t)p->processed, data, size);
   }
   p->processed += size;
   return size;
@@ -1419,7 +1423,7 @@ static SRes BraState_Code2(void *pp,
       size_t size = p->bufConv - p->bufPos;
       if (size > destRem)
         size = destRem;
-      memcpy(dest, p->buf + p->bufPos, size);
+      __common_memcpy(dest, p->buf + p->bufPos, size);
       p->bufPos += size;
       *destLen += size;
       dest += size;
@@ -1435,7 +1439,7 @@ static SRes BraState_Code2(void *pp,
       size_t size = BRA_BUF_SIZE - p->bufTotal;
       if (size > srcRem)
         size = srcRem;
-      memcpy(p->buf + p->bufTotal, src, size);
+      __common_memcpy(p->buf + p->bufTotal, src, size);
       *srcLen += size;
       src += size;
       srcRem -= size;
@@ -1990,7 +1994,7 @@ SRes XzBlock_Parse(CXzBlock *p, const Byte *header)
     if (size > headerSize - pos || size > XZ_FILTER_PROPS_SIZE_MAX)
       return SZ_ERROR_ARCHIVE;
     filter->propsSize = (UInt32)size;
-    memcpy(filter->props, header + pos, (size_t)size);
+    __common_memcpy(filter->props, header + pos, (size_t)size);
     pos += (unsigned)size;
 
     #ifdef XZ_DUMP
@@ -2298,7 +2302,7 @@ SRes XzUnpacker_Code(CXzUnpacker *p, Byte *dest, SizeT *destLen,
           UInt32 cur = p->blockHeaderSize - p->pos;
           if (cur > srcRem)
             cur = (UInt32)srcRem;
-          memcpy(p->buf + p->pos, src, cur);
+          __common_memcpy(p->buf + p->pos, src, cur);
           p->pos += cur;
           (*srcLen) += cur;
           src += cur;
@@ -2350,7 +2354,7 @@ SRes XzUnpacker_Code(CXzUnpacker *p, Byte *dest, SizeT *destLen,
             }
             if (cur > srcRem)
               cur = (UInt32)srcRem;
-            memcpy(p->buf + p->pos, src, cur);
+            __common_memcpy(p->buf + p->pos, src, cur);
             p->pos += cur;
             (*srcLen) += cur;
             src += cur;
@@ -2441,7 +2445,7 @@ SRes XzUnpacker_Code(CXzUnpacker *p, Byte *dest, SizeT *destLen,
         UInt32 cur = XZ_STREAM_FOOTER_SIZE - p->pos;
         if (cur > srcRem)
           cur = (UInt32)srcRem;
-        memcpy(p->buf + p->pos, src, cur);
+        __common_memcpy(p->buf + p->pos, src, cur);
         p->pos += cur;
         (*srcLen) += cur;
         src += cur;
@@ -3331,7 +3335,7 @@ static SRes XzDecMt_Callback_Write(void *pp, unsigned coderIndex,
           if (!crossBuf)
             return SZ_ERROR_MEM;
           if (srcSize != 0)
-            memcpy(crossBuf, src, srcSize);
+            __common_memcpy(crossBuf, src, srcSize);
           me->mtc.crossStart = 0;
           me->mtc.crossEnd = srcSize;
         }

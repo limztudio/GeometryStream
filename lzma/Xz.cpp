@@ -7,6 +7,10 @@
 #include "CpuArch.h"
 #include "XzCrc64.h"
 
+
+extern bool __common_memcpy(void*, const void*, size_t);
+
+
 const Byte XZ_SIG[XZ_SIG_SIZE] = { 0xFD, '7', 'z', 'X', 'Z', 0 };
 /* const Byte XZ_FOOTER_SIG[XZ_FOOTER_SIG_SIZE] = { 'Y', 'Z' }; */
 
@@ -400,7 +404,7 @@ SRes Xzs_ReadBackward(CXzs *p, ILookInStream *stream, Int64 *startOffset, ICompr
         return SZ_ERROR_MEM;
       p->numAllocated = newNum;
       if (p->num != 0)
-        memcpy(data, p->streams, p->num * sizeof(CXzStream));
+        __common_memcpy(data, p->streams, p->num * sizeof(CXzStream));
       ISzAlloc_Free(alloc, p->streams);
       p->streams = (CXzStream *)data;
     }

@@ -11,6 +11,10 @@
 
 #include "LzHash.h"
 
+
+extern bool __common_memcpy(void*, const void*, size_t);
+
+
 // #define LOG_ITERS
 
 // #define LOG_THREAD
@@ -98,7 +102,7 @@ static void MtSync_Construct(CMtSync *p)
 #define DEBUG_BUFFER_LOCK   // define it to debug lock state
 
 #ifdef DEBUG_BUFFER_LOCK
-#include <stdlib.h>
+#include <cstdlib>
 #define BUFFER_MUST_BE_LOCKED(p)    if (!(p)->csWasEntered) exit(1);
 #define BUFFER_MUST_BE_UNLOCKED(p)  if ( (p)->csWasEntered) exit(1);
 #else
@@ -909,7 +913,7 @@ static void MatchFinderMt_Init(CMatchFinderMt *p)
   p->fixedHashSize = mf->fixedHashSize;
   // p->hash4Mask = mf->hash4Mask;
   p->crc = mf->crc;
-  // memcpy(p->crc, mf->crc, sizeof(mf->crc));
+  // __common_memcpy(p->crc, mf->crc, sizeof(mf->crc));
 
   p->son = mf->son;
   p->matchMaxLen = mf->matchMaxLen;

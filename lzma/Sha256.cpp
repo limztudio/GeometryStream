@@ -9,6 +9,10 @@ This code is based on public domain code from Wei Dai's Crypto++ library. */
 #include "CpuArch.h"
 #include "RotateDefs.h"
 
+
+extern bool __common_memcpy(void*, const void*, size_t);
+
+
 #if defined(_MSC_VER) && (_MSC_VER < 1900)
 // #define USE_MY_MM
 #endif
@@ -382,14 +386,14 @@ void Sha256_Update(CSha256 *p, const Byte *data, size_t size)
     num = 64 - pos;
     if (num > size)
     {
-      memcpy(p->buffer + pos, data, size);
+      __common_memcpy(p->buffer + pos, data, size);
       return;
     }
     
     if (pos != 0)
     {
       size -= num;
-      memcpy(p->buffer + pos, data, num);
+      __common_memcpy(p->buffer + pos, data, num);
       data += num;
       Sha256_UpdateBlock(p);
     }
@@ -401,7 +405,7 @@ void Sha256_Update(CSha256 *p, const Byte *data, size_t size)
     if (size == 0)
       return;
     data += (numBlocks << 6);
-    memcpy(p->buffer, data, size);
+    __common_memcpy(p->buffer, data, size);
   }
 }
 

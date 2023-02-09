@@ -5,6 +5,10 @@
 
 #include <cstring>
 
+
+extern bool __common_memcpy(void*, const void*, size_t);
+
+
 SRes SeqInStream_Read2(const ISeqInStream *stream, void *buf, size_t size, SRes errorType)
 {
   while (size != 0)
@@ -45,7 +49,7 @@ SRes LookInStream_LookRead(const ILookInStream *stream, void *buf, size_t *size)
   if (*size == 0)
     return SZ_OK;
   RINOK(ILookInStream_Look(stream, &lookBuf, size));
-  memcpy(buf, lookBuf, *size);
+  __common_memcpy(buf, lookBuf, *size);
   return ILookInStream_Skip(stream, *size);
 }
 
@@ -126,7 +130,7 @@ static SRes LookToRead2_Read(const ILookInStream *pp, void *buf, size_t *size)
     return ISeekInStream_Read(p->realStream, buf, size);
   if (rem > *size)
     rem = *size;
-  memcpy(buf, p->buf + p->pos, rem);
+  __common_memcpy(buf, p->buf + p->pos, rem);
   p->pos += rem;
   *size = rem;
   return SZ_OK;

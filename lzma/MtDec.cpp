@@ -3,6 +3,10 @@
 
 #include "MtDec.h"
 
+
+extern bool __common_memcpy(void*, const void*, size_t);
+
+
 // #define SHOW_DEBUG_INFO
 
 // #include <cstdio>
@@ -447,7 +451,7 @@ static WRes ThreadFunc2(CMtDecThread *t)
                 }
                 
                 if (crossSize != 0)
-                  memcpy(data, parseData, size);
+                  __common_memcpy(data, parseData, size);
                 p->crossStart = 0;
                 p->crossEnd = 0;
                 break;
@@ -455,7 +459,7 @@ static WRes ThreadFunc2(CMtDecThread *t)
 
               if (crossSize != 0)
               {
-                memcpy(data, parseData, parse.srcSize);
+                __common_memcpy(data, parseData, parse.srcSize);
                 p->crossStart += parse.srcSize;
               }
 
@@ -515,7 +519,7 @@ static WRes ThreadFunc2(CMtDecThread *t)
                       inDataSize -= crSize;
                       p->crossEnd = crSize;
                       p->crossStart = 0;
-                      memcpy(cr, parseData + parse.srcSize, crSize);
+                      __common_memcpy(cr, parseData + parse.srcSize, crSize);
                     }
                   }
 

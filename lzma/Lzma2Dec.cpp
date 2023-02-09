@@ -11,6 +11,10 @@
 
 #include <cstring>
 
+
+extern bool __common_memcpy(void*, const void*, size_t);
+
+
 /*
 00000000  -  End of data
 00000001 U U  -  Uncompressed, reset dic, need reset state and set new prop
@@ -161,7 +165,7 @@ static unsigned Lzma2Dec_UpdateState(CLzma2Dec *p, Byte b)
 
 static void LzmaDec_UpdateWithUncompressed(CLzmaDec *p, const Byte *src, SizeT size)
 {
-  memcpy(p->dic + p->dicPos, src, size);
+  __common_memcpy(p->dic + p->dicPos, src, size);
   p->dicPos += size;
   if (p->checkDicSize == 0 && p->prop.dicSize - p->processedPos <= size)
     p->checkDicSize = p->prop.dicSize;
@@ -452,7 +456,7 @@ SRes Lzma2Dec_DecodeToBuf(CLzma2Dec *p, Byte *dest, SizeT *destLen, const Byte *
     inSize -= inCur;
     *srcLen += inCur;
     outCur = p->decoder.dicPos - dicPos;
-    memcpy(dest, p->decoder.dic + dicPos, outCur);
+    __common_memcpy(dest, p->decoder.dic + dicPos, outCur);
     dest += outCur;
     outSize -= outCur;
     *destLen += outCur;
