@@ -5,7 +5,10 @@
 #define __7Z_TYPES_H
 
 #ifdef _WIN32
-/* #include <windows.h> */
+// #ifndef WIN32_LEAN_AND_MEAN
+// #define WIN32_LEAN_AND_MEAN
+// #endif
+// #include <Windows.h>
 #else
 #include <cerrno>
 #endif

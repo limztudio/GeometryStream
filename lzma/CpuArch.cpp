@@ -215,6 +215,9 @@ BoolInt CPU_Is_InOrder()
 }
 
 #if !defined(MY_CPU_AMD64) && defined(_WIN32)
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
 #include <Windows.h>
 static BoolInt CPU_Sys_Is_SSE_Supported()
 {
@@ -273,6 +276,9 @@ BoolInt CPU_IsSupported_SHA()
 // #include <cstdio>
 
 #ifdef _WIN32
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
 #include <Windows.h>
 #endif
 
@@ -349,6 +355,9 @@ BoolInt CPU_IsSupported_PageGB()
 
 #ifdef _WIN32
 
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
 #include <Windows.h>
 
 BoolInt CPU_IsSupported_CRC32()  { return IsProcessorFeaturePresent(PF_ARM_V8_CRC32_INSTRUCTIONS_AVAILABLE) ? 1 : 0; }
