@@ -206,7 +206,7 @@ namespace __hidden_GeometryIOProcessor
 			break;
 
 		case SZ_ERROR_ARCHIVE:
-			Msg = MAKE_TEXT(SZ_ERROR_THREAD);
+			Msg = MAKE_TEXT(SZ_ERROR_ARCHIVE);
 			break;
 		case SZ_ERROR_NO_ARCHIVE:
 			Msg = MAKE_TEXT(SZ_ERROR_NO_ARCHIVE);
